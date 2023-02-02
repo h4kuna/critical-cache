@@ -1,0 +1,10 @@
+parameters:
+	level: max
+	paths:
+		- src
+		- tests/src
+	ignoreErrors:
+
+includes:
+	- vendor/phpstan/phpstan-strict-rules/rules.neon
+	- phpstan-baseline.neon
