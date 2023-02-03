@@ -3,19 +3,11 @@
 namespace h4kuna\CriticalCache;
 
 use h4kuna\CriticalCache\Exceptions\MissingDependencyException;
+use h4kuna\Dir\Dir;
 use Nette\Caching\Storages\FileStorage;
-use Nette\Utils;
-use League\Flysystem;
 
 final class Dependency
 {
-	public static function checkNetteUtils(): void
-	{
-		if (class_exists(Utils\FileSystem::class) === false) {
-			throw MissingDependencyException::create(Utils\FileSystem::class, 'nette/utils');
-		}
-	}
-
 
 	public static function checkNetteCaching(): void
 	{
@@ -25,10 +17,10 @@ final class Dependency
 	}
 
 
-	public static function checkLeagueFileSystem(): void
+	public static function checkH4kunaDir(): void
 	{
-		if (class_exists(Flysystem\Filesystem::class) === false) {
-			throw MissingDependencyException::create(Flysystem\Filesystem::class, 'league/flysystem');
+		if (class_exists(Dir::class) === false) {
+			throw MissingDependencyException::create(Dir::class, 'h4kuna/dir');
 		}
 	}
 

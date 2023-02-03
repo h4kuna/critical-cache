@@ -28,7 +28,7 @@ Method `load` try read from cache, if data is not `null` that success else creat
 ## Lock
 By default, is used [malkusch/lock](//github.com/php-lock/lock), but if you implement [Lock](src/Lock.php) interface you can use different library.
 
-And by default is used [FlockMutex](//github.com/php-lock/lock/blob/master/classes/mutex/FlockMutex.php) this is reason why is need [thephpleague/flysystem](//github.com/thephpleague/flysystem) and [nette/utils](//github.com/nette/utils). If you use different [Lock](//github.com/php-lock/lock/tree/master/classes/mutex) you don't need previous two libraries.
+And by default is used [FlockMutex](//github.com/php-lock/lock/blob/master/classes/mutex/FlockMutex.php) this is reason why is need [h4kuna/dir](//github.com/h4kuna/dir). If you use different [Lock](//github.com/php-lock/lock/tree/master/classes/mutex) you don't need previous library.
 
 ## Cache
 By default, is used [nette/caching](//github.com/nette/caching) and it is implemented by [NetteCache](src/PSR16/NetteCache.php), this class implement PSR-16.

@@ -3,14 +3,14 @@
 namespace h4kuna\CriticalCache\PSR16;
 
 use h4kuna\CriticalCache\PSR16CacheFactory;
+use h4kuna\Dir\TempDir;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\FileStorage;
-use Nette\Utils\FileSystem;
 
 final class NetteCacheFactory implements PSR16CacheFactory
 {
 
-	public function __construct(private string $tempDir)
+	public function __construct(private TempDir $tempDir)
 	{
 	}
 
@@ -23,13 +23,12 @@ final class NetteCacheFactory implements PSR16CacheFactory
 
 	protected function createStorage(string $namespace): Storage
 	{
-		$storageDir = $this->tempDir . '/h4kuna/cache';
+		$storageDir = $this->tempDir;
 		if ($namespace !== '') {
-			$storageDir .= "/$namespace";
+			$storageDir = $storageDir->dir($namespace);
 		}
-		FileSystem::createDir($storageDir);
 
-		return new FileStorage($storageDir);
+		return new FileStorage($storageDir->getDir());
 	}
 
 }

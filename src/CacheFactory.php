@@ -4,17 +4,21 @@ namespace h4kuna\CriticalCache;
 
 use h4kuna\CriticalCache\PSR16\NetteCacheFactory;
 use h4kuna\CriticalCache\Lock\CriticalSectionOriginal;
-use League\Flysystem;
-use Nette\Utils;
+use h4kuna\Dir\TempDir;
 
 class CacheFactory
 {
+	protected TempDir $tempDir;
 
-	public function __construct(protected string $tempDir = '')
+
+	public function __construct(string $tempDir = '')
 	{
-		if ($this->tempDir === '') {
-			$this->tempDir = sys_get_temp_dir();
+		if ($tempDir === '') {
+			$tempDir = sys_get_temp_dir();
 		}
+
+		Dependency::checkH4kunaDir();
+		$this->tempDir = new TempDir($tempDir);
 	}
 
 
@@ -27,33 +31,14 @@ class CacheFactory
 	protected function createPSR16CacheFactory(): PSR16CacheFactory
 	{
 		Dependency::checkNetteCaching();
-		Dependency::checkNetteUtils();
 
-		return new NetteCacheFactory($this->tempDir);
+		return new NetteCacheFactory($this->tempDir->dir('h4kuna/cache'));
 	}
 
 
 	protected function createLockOriginal(): LockOriginal
 	{
-		return new CriticalSectionOriginal($this->createFileSystemOperator());
-	}
-
-
-	protected function createFileSystemOperator(): Flysystem\FilesystemOperator
-	{
-		Dependency::checkLeagueFileSystem();
-
-		return new Flysystem\Filesystem($this->createFileSystemAdapter());
-	}
-
-
-	protected function createFileSystemAdapter(): Flysystem\FilesystemAdapter
-	{
-		Dependency::checkNetteUtils();
-		$lockDir = $this->tempDir . '/h4kuna/locks';
-		Utils\FileSystem::createDir($lockDir);
-
-		return new Flysystem\Local\LocalFilesystemAdapter($lockDir);
+		return new CriticalSectionOriginal($this->tempDir->dir('h4kuna/locks'));
 	}
 
 }

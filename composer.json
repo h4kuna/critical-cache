@@ -16,11 +16,10 @@
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {
-    "league/flysystem": "^3.12",
+    "h4kuna/dir": "^0.1.0",
     "malkusch/lock": "^2.2",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
-    "nette/utils": "^3.2",
     "phpstan/phpstan": "^1.8",
     "phpstan/phpstan-strict-rules": "^1.4",
     "tracy/tracy": "^2.9"
@@ -46,8 +45,7 @@
   },
   "suggest": {
     "malkusch/lock": "As default implementation for Lock system.",
-    "league/flysystem": "FlockMutex is used for create file stream.",
-    "nette/utils": "FlockMutex need create sub directories.",
+    "h4kuna/dir": "malkusch/lock and nette/cache need to create directories.",
     "nette/caching": "As default implementation for Cache for PSR-16."
   }
 }

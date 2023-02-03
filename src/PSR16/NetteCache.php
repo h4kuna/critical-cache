@@ -13,13 +13,13 @@ final class NetteCache implements CacheInterface
 	}
 
 
-	public function get($key, mixed $default = null): mixed
+	public function get(string $key, mixed $default = null): mixed
 	{
 		return $this->storage->read($key) ?? $default;
 	}
 
 
-	public function set($key, $value, $ttl = null): bool
+	public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
 	{
 		$dependencies = [];
 		if ($ttl !== null) {
@@ -32,7 +32,7 @@ final class NetteCache implements CacheInterface
 	}
 
 
-	public function delete($key): bool
+	public function delete(string $key): bool
 	{
 		$this->storage->remove($key);
 
@@ -49,13 +49,13 @@ final class NetteCache implements CacheInterface
 
 
 	/**
-	 * @param iterable<string|int, string> $keys
-	 * @return iterable<string|int, mixed>
+	 * @param iterable<string> $keys
+	 * @return iterable<string, mixed>
 	 */
-	public function getMultiple($keys, mixed $default = null): iterable
+	public function getMultiple(iterable $keys, mixed $default = null): iterable
 	{
 		foreach ($keys as $key => $name) {
-			yield $key => $this->get($name, $default);
+			yield strval($key) => $this->get($name, $default);
 		}
 	}
 
@@ -63,7 +63,7 @@ final class NetteCache implements CacheInterface
 	/**
 	 * @param iterable<string, mixed> $values
 	 */
-	public function setMultiple($values, $ttl = null): bool
+	public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
 	{
 		foreach ($values as $key => $value) {
 			$this->set($key, $value, $ttl);
@@ -76,7 +76,7 @@ final class NetteCache implements CacheInterface
 	/**
 	 * @param iterable<string> $keys
 	 */
-	public function deleteMultiple($keys): bool
+	public function deleteMultiple(iterable $keys): bool
 	{
 		foreach ($keys as $value) {
 			$this->delete($value);
@@ -86,7 +86,7 @@ final class NetteCache implements CacheInterface
 	}
 
 
-	public function has($key): bool
+	public function has(string $key): bool
 	{
 		return $this->storage->read($key) !== null;
 	}

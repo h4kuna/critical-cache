@@ -2,4 +2,5 @@
 .gitignore export-ignore
 .github export-ignore
 phpstan.neon export-ignore
+phpstan-baseline.neon export-ignore
 tests export-ignore
