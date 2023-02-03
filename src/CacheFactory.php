@@ -8,17 +8,12 @@ use h4kuna\Dir\TempDir;
 
 class CacheFactory
 {
-	protected TempDir $tempDir;
 
-
-	public function __construct(string $tempDir = '')
+	public function __construct(protected string $tempDir = '')
 	{
-		if ($tempDir === '') {
-			$tempDir = sys_get_temp_dir();
+		if ($this->tempDir === '') {
+			$this->tempDir = sys_get_temp_dir();
 		}
-
-		Dependency::checkH4kunaDir();
-		$this->tempDir = new TempDir($tempDir);
 	}
 
 
@@ -32,13 +27,23 @@ class CacheFactory
 	{
 		Dependency::checkNetteCaching();
 
-		return new NetteCacheFactory($this->tempDir->dir('h4kuna/cache'));
+		return new NetteCacheFactory($this->createTempDir()->dir('h4kuna/cache'));
 	}
 
 
 	protected function createLockOriginal(): LockOriginal
 	{
-		return new CriticalSectionOriginal($this->tempDir->dir('h4kuna/locks'));
+		Dependency::checkMalkuschLock();
+
+		return new CriticalSectionOriginal($this->createTempDir()->dir('h4kuna/locks'));
+	}
+
+
+	protected function createTempDir(): TempDir
+	{
+		Dependency::checkH4kunaDir();
+
+		return new TempDir($this->tempDir);
 	}
 
 }

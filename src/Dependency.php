@@ -4,6 +4,7 @@ namespace h4kuna\CriticalCache;
 
 use h4kuna\CriticalCache\Exceptions\MissingDependencyException;
 use h4kuna\Dir\Dir;
+use malkusch\lock\mutex\LockMutex;
 use Nette\Caching\Storages\FileStorage;
 
 final class Dependency
@@ -21,6 +22,14 @@ final class Dependency
 	{
 		if (class_exists(Dir::class) === false) {
 			throw MissingDependencyException::create(Dir::class, 'h4kuna/dir');
+		}
+	}
+
+
+	public static function checkMalkuschLock(): void
+	{
+		if (class_exists(LockMutex::class) === false) {
+			throw MissingDependencyException::create(LockMutex::class, 'malkusch/lock');
 		}
 	}
 
