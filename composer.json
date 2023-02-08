@@ -16,7 +16,7 @@
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {
-    "h4kuna/dir": "^0.1.0",
+    "h4kuna/dir": "^0.1.2",
     "malkusch/lock": "^2.2",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
