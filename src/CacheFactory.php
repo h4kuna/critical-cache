@@ -10,7 +10,7 @@ use h4kuna\Dir\TempDir;
 class CacheFactory
 {
 
-	public function __construct(protected string $tempDir = '')
+	public function __construct(protected string|TempDir $tempDir = '')
 	{
 	}
 
@@ -40,6 +40,10 @@ class CacheFactory
 	protected function createTempDir(): TempDir
 	{
 		MissingDependencyException::checkH4kunaDir();
+
+		if ($this->tempDir instanceof TempDir) {
+			return $this->tempDir;
+		}
 
 		return new TempDir($this->tempDir);
 	}
