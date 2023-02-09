@@ -22,8 +22,9 @@ class Cache implements CacheLocking
 
 	public function namespace(string $namespace): self
 	{
+		$ns = preg_replace('/[^\w\d-]/', '-', $namespace);
 		$clone = clone $this;
-		$clone->namespace = ltrim("$clone->namespace/$namespace", '/');
+		$clone->namespace = ltrim("$clone->namespace/$ns", '/');
 		$clone->createCache();
 
 		return $clone;
