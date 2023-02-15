@@ -12,7 +12,7 @@ interface CacheLocking extends CacheInterface
 	 * @param \Closure(): T $callback
 	 * @return T
 	 */
-	function load(string $key, \Closure $callback, \DateInterval|int|null $ttl = null);
+	function load(string $key, \Closure $callback);
 
 
 	/**

@@ -2,6 +2,7 @@
 
 namespace h4kuna\CriticalCache;
 
+use h4kuna\CriticalCache\Utils\Dependency;
 use Psr\SimpleCache\CacheInterface;
 
 class Cache implements CacheLocking
@@ -104,20 +105,21 @@ class Cache implements CacheLocking
 
 	/**
 	 * @template T
-	 * @param \Closure(): T $callback
+	 * @param \Closure(Dependency $dependency): T $callback
 	 * @return T
 	 */
-	public function load(string $key, \Closure $callback, \DateInterval|int|null $ttl = null)
+	public function load(string $key, \Closure $callback)
 	{
 		$cacheKey = $this->key($key);
 
 		$data = $this->cache->get($cacheKey);
 		if ($data === null) {
-			return $this->synchronized($key, function () use ($cacheKey, $callback, $ttl): mixed {
+			return $this->synchronized($key, function () use ($cacheKey, $callback): mixed {
 				$data = $this->cache->get($cacheKey);
 				if ($data === null) {
-					$data = $callback();
-					$this->cache->set($cacheKey, $data, $ttl);
+					$dependency = new Dependency();
+					$data = $callback($dependency);
+					$this->cache->set($cacheKey, $data, $dependency->ttl);
 				}
 
 				return $data;
