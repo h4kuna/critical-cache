@@ -1,6 +1,0 @@
-parameters:
-	ignoreErrors:
-		-
-			message: "#^Parameter \\#1 \\$values \\(iterable\\<string, mixed\\>\\) of method h4kuna\\\\CriticalCache\\\\PSR16\\\\NetteCache\\:\\:setMultiple\\(\\) should be contravariant with parameter \\$values \\(iterable\\) of method Psr\\\\SimpleCache\\\\CacheInterface\\:\\:setMultiple\\(\\)$#"
-			count: 1
-			path: src/PSR16/NetteCache.php

@@ -4,7 +4,16 @@ parameters:
 		- src
 		- tests/src
 	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$values \\(iterable\\<float\\|int\\|string, mixed\\>\\) of method h4kuna\\\\CriticalCache\\\\Cache\\:\\:setMultiple\\(\\) should be contravariant with parameter \\$values \\(iterable\\) of method Psr\\\\SimpleCache\\\\CacheInterface\\:\\:setMultiple\\(\\)$#"
+			count: 2
+			path: src/Cache.php
+
+		-
+			message: "#^Parameter \\#1 \\$values \\(iterable\\<float\\|int\\|string, mixed\\>\\) of method h4kuna\\\\CriticalCache\\\\PSR16\\\\NetteCache\\:\\:setMultiple\\(\\) should be contravariant with parameter \\$values \\(iterable\\) of method Psr\\\\SimpleCache\\\\CacheInterface\\:\\:setMultiple\\(\\)$#"
+			count: 1
+			path: src/PSR16/NetteCache.php
+
 
 includes:
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
-	- phpstan-baseline.neon

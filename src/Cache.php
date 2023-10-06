@@ -72,12 +72,12 @@ class Cache implements CacheLocking
 
 
 	/**
-	 * @param iterable<mixed> $values
+	 * @param iterable<float|int|string, mixed> $values
 	 */
 	public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
 	{
 		foreach ($values as $key => $value) {
-			$this->set(strval($key), $value, $ttl);
+			$this->set((string) $key, $value, $ttl);
 		}
 
 		return true;
@@ -105,7 +105,7 @@ class Cache implements CacheLocking
 
 	/**
 	 * @template T
-	 * @param \Closure(Dependency $dependency): T $callback
+	 * @param \Closure(Dependency, CacheInterface, string): T $callback
 	 * @return T
 	 */
 	public function load(string $key, \Closure $callback)
@@ -118,7 +118,7 @@ class Cache implements CacheLocking
 				$data = $this->cache->get($cacheKey);
 				if ($data === null) {
 					$dependency = new Dependency();
-					$data = $callback($dependency);
+					$data = $callback($dependency, $this->cache, $this->key(''));
 					$this->cache->set($cacheKey, $data, $dependency->ttl);
 				}
 

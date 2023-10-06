@@ -2,6 +2,8 @@
 
 namespace h4kuna\CriticalCache;
 
+use Closure;
+use h4kuna\CriticalCache\Utils\Dependency;
 use Psr\SimpleCache\CacheInterface;
 
 interface CacheLocking extends CacheInterface
@@ -9,17 +11,17 @@ interface CacheLocking extends CacheInterface
 
 	/**
 	 * @template T
-	 * @param \Closure(): T $callback
+	 * @param Closure(Dependency, CacheInterface, string): T $callback
 	 * @return T
 	 */
-	function load(string $key, \Closure $callback);
+	function load(string $key, Closure $callback);
 
 
 	/**
 	 * @template T
-	 * @param \Closure(): T $callback
+	 * @param Closure(): T $callback
 	 * @return T
 	 */
-	function synchronized(string $key, \Closure $callback);
+	function synchronized(string $key, Closure $callback);
 
 }

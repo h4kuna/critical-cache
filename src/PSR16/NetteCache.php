@@ -48,34 +48,28 @@ final class NetteCache implements CacheInterface
 	}
 
 
-	/**
-	 * @param iterable<string> $keys
-	 * @return iterable<string, mixed>
-	 */
 	public function getMultiple(iterable $keys, mixed $default = null): iterable
 	{
 		foreach ($keys as $key => $name) {
-			yield strval($key) => $this->get($name, $default);
+			assert(is_string($key) || is_int($key) || is_float($key));
+			yield (string) $key => $this->get($name, $default);
 		}
 	}
 
 
 	/**
-	 * @param iterable<string, mixed> $values
+	 * @param iterable<string|int|float, mixed> $values
 	 */
 	public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
 	{
 		foreach ($values as $key => $value) {
-			$this->set($key, $value, $ttl);
+			$this->set((string) $key, $value, $ttl);
 		}
 
 		return true;
 	}
 
 
-	/**
-	 * @param iterable<string> $keys
-	 */
 	public function deleteMultiple(iterable $keys): bool
 	{
 		foreach ($keys as $value) {
