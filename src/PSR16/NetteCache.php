@@ -4,6 +4,7 @@ namespace h4kuna\CriticalCache\PSR16;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Nette\NotImplementedException;
 use Psr\SimpleCache\CacheInterface;
 
 final class NetteCache implements CacheInterface
@@ -23,6 +24,9 @@ final class NetteCache implements CacheInterface
 	{
 		$dependencies = [];
 		if ($ttl !== null) {
+			if ($ttl instanceof \DateInterval) {
+				throw new \RuntimeException('Use DateInterval like ttl is not implemented.');
+			}
 			$dependencies[Cache::Expire] = $ttl;
 		}
 
