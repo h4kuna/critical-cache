@@ -7,6 +7,7 @@ use h4kuna\CriticalCache\Strategy;
 use h4kuna\CriticalCache\Utils\Dependency;
 use Nette\Caching\Storages\FileStorage;
 use Nette\Caching\Storages\MemoryStorage;
+use Nette\Utils\FileSystem;
 use Tester\Assert;
 use Tester\Helpers;
 use Tester\TestCase;
@@ -35,8 +36,30 @@ final class StrategyTest extends TestCase
 
 		Assert::same('empty', $data);
 		Assert::same('empty', $strategy->get('foo.test'));
-		Assert::same('empty', $memoryCache->get('foo.test'));
-		Assert::same('empty', $fileCache->get('foo.test'));
+		Assert::same(['data' => 'empty', 'ttl' => null], $memoryCache->get('foo.test'));
+		Assert::same(['data' => 'empty', 'ttl' => null], $fileCache->get('foo.test'));
+	}
+
+
+	public function testDeleteClear(): void
+	{
+		$tempDir = self::tempDir('delete-clear');
+		$memoryCache = new NetteCache(new MemoryStorage()); // Memory implements CacheInterface
+		$fileCache = new NetteCache(new FileStorage($tempDir)); // File implements CacheInterface
+		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]); // add cache by priority
+
+		$strategy->set('a', 'a');
+		$strategy->set('b', 'b');
+		$strategy->set('c', 'c');
+		$strategy->delete('c');
+		Assert::same('a', $strategy->get('a'));
+		Assert::same('b', $strategy->get('b'));
+		Assert::null($strategy->get('c'));
+
+		$strategy->clear();
+		Assert::null($strategy->get('a'));
+		Assert::null($strategy->get('b'));
+		Assert::null($strategy->get('c'));
 	}
 
 
@@ -61,19 +84,34 @@ final class StrategyTest extends TestCase
 
 		Assert::same('FOO', $data);
 		Assert::same('FOO', $strategyFoo->get('test'));
-		Assert::same('FOO', $memoryCache->get('foo.test'));
-		Assert::same('FOO', $fileCache->get('foo.test'));
+		Assert::same(['data' => 'FOO', 'ttl' => null], $memoryCache->get('foo.test'));
+		Assert::same(['data' => 'FOO', 'ttl' => null], $fileCache->get('foo.test'));
 
 		Assert::same('BAR', $dataBar);
 		Assert::same('BAR', $strategyBar->get('test'));
-		Assert::same('BAR', $memoryCache->get('foo.bar.test'));
+		Assert::same(['data' => 'BAR', 'ttl' => null], $memoryCache->get('foo.bar.test'));
 		Assert::null($fileCache->get('foo.bar.test'));
+	}
+
+
+	public function testUpdateParent(): void
+	{
+		$tempDir = self::tempDir('memory-parent');
+		$memoryCache = new NetteCache(new MemoryStorage()); // Memory implements CacheInterface
+		$fileCache = new NetteCache(new FileStorage($tempDir)); // File implements CacheInterface
+		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]); // add cache by priority
+
+		$expire = time() + 80;
+		$fileCache->set('test', ['data' => 'a', 'ttl' => $expire], 80);
+		Assert::same('a', $strategy->get('test'));
+		Assert::same(['data' => 'a', 'ttl' => $expire], $memoryCache->get('test'));
 	}
 
 
 	private static function tempDir(string $dir): string
 	{
 		$tempDir = self::TempDir . '/' . $dir;
+		FileSystem::createDir($tempDir);
 		Helpers::purge($tempDir);
 
 		return $tempDir;

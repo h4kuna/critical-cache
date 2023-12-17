@@ -93,13 +93,36 @@ final class CacheTest extends TestCase
 		$criticalSection = self::createCache(__METHOD__);
 		$newNamespace = $criticalSection->namespace('foo');
 
+		Assert::false($criticalSection->has('foo'));
 		$criticalSection->set('foo', 'one', 5);
+		Assert::true($criticalSection->has('foo'));
 		$newNamespace->set('foo', 'two', 5);
 
 		$newNamespace->clear();
 
 		Assert::same('one', $criticalSection->get('foo'));
 		Assert::null($newNamespace->get('foo'));
+	}
+
+
+	public function testLoad(): void
+	{
+		$criticalSection = self::createCache(__METHOD__);
+		$count = 0;
+		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+			Assert::null($dependency->ttl);
+			++$count;
+			return 'bar';
+		});
+		Assert::same(1, $count);;
+		Assert::same('bar', $value);
+		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+			Assert::null($dependency->ttl);
+			++$count;
+			return 'bar';
+		});
+		Assert::same(1, $count);;
+		Assert::same('bar', $value);
 	}
 
 

@@ -49,13 +49,20 @@ final class Strategy implements CacheInterface
 
 	public function get(string $key, mixed $default = null): mixed
 	{
+		$backup = [];
 		foreach ($this->caches as $name => $cache) {
+			/** @var ?array{data: mixed, ttl: int} $result */
 			$result = $cache->get($this->namespace . $key);
 			if ($result !== null) {
-				return $result;
+				if ($backup !== []) {
+					$this->saveToParents($backup, $result, $key);
+				}
+
+				return $result['data'];
 			} elseif ($this->breakPoint === $name) {
 				break;
 			}
+			$backup[] = $cache;
 		}
 
 		return $this->useDefault($key, $default);
@@ -65,8 +72,12 @@ final class Strategy implements CacheInterface
 	public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
 	{
 		$return = false;
+		$saveTtl = is_int($ttl) ? time() + $ttl : null;
 		foreach ($this->caches as $name => $cache) {
-			$return = $cache->set($this->namespace . $key, $value, $ttl) || $return;
+			$return = $cache->set($this->namespace . $key, [
+					'data' => $value,
+					'ttl' => $saveTtl,
+				], $ttl) || $return;
 			if ($this->breakPoint === $name) {
 				break;
 			}
@@ -132,6 +143,15 @@ final class Strategy implements CacheInterface
 	public function has(string $key): bool
 	{
 		throw new InvalidStateException('Not implemented');
+	}
+
+
+	private function saveToParents(array $backup, array $result, string $key): void
+	{
+		$ttl = $result['ttl'] - time();
+		foreach ($backup as $backCache) {
+			$backCache->set($this->namespace . $key, $result, $ttl);
+		}
 	}
 
 }
