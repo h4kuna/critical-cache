@@ -58,7 +58,7 @@ final class MemoryTtlStorage implements Storage
 	 */
 	public function clean(array $conditions): void
 	{
-		if (!empty($conditions[Cache::All])) {
+		if (isset($conditions[Cache::All])) {
 			$this->data = [];
 		}
 	}

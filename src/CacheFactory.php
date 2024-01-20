@@ -5,12 +5,13 @@ namespace h4kuna\CriticalCache;
 use h4kuna\CriticalCache\Exceptions\MissingDependencyException;
 use h4kuna\CriticalCache\PSR16\NetteCacheFactory;
 use h4kuna\CriticalCache\Lock\CriticalSectionOriginal;
+use h4kuna\Dir\Dir;
 use h4kuna\Dir\TempDir;
 
 class CacheFactory
 {
 
-	public function __construct(protected string|TempDir $tempDir = '')
+	public function __construct(protected string|Dir $tempDir = '')
 	{
 	}
 
@@ -37,11 +38,11 @@ class CacheFactory
 	}
 
 
-	protected function createTempDir(): TempDir
+	protected function createTempDir(): Dir
 	{
 		MissingDependencyException::checkH4kunaDir();
 
-		if ($this->tempDir instanceof TempDir) {
+		if ($this->tempDir instanceof Dir) {
 			return $this->tempDir;
 		}
 

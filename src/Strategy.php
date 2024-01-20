@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache;
 
@@ -17,20 +17,16 @@ final class Strategy implements CacheInterface
 
 	private string $namespace = '';
 
-
 	/**
 	 * @param array<string, CacheInterface> $caches
 	 */
-	public function __construct(private array $caches)
-	{
-	}
-
+	public function __construct(private array $caches) {}
 
 	public function setStrategy(?string $breakPoint, string $namespace = ''): self
 	{
 		if ($breakPoint === null && $namespace === '') {
 			throw new InvalidStateException('BreakPoint and namespace are empty. Not allowed.');
-		} elseif ($breakPoint !== null && isset($this->caches[$breakPoint]) === false) {
+		} else if ($breakPoint !== null && isset($this->caches[$breakPoint]) === false) {
 			throw new InvalidStateException(sprintf('BreakPoint is missing in array of caches %s.', $breakPoint));
 		}
 
@@ -46,7 +42,6 @@ final class Strategy implements CacheInterface
 		return $strategy;
 	}
 
-
 	public function get(string $key, mixed $default = null): mixed
 	{
 		$backup = [];
@@ -59,7 +54,7 @@ final class Strategy implements CacheInterface
 				}
 
 				return $result['data'];
-			} elseif ($this->breakPoint === $name) {
+			} else if ($this->breakPoint === $name) {
 				break;
 			}
 			$backup[] = $cache;
@@ -67,7 +62,6 @@ final class Strategy implements CacheInterface
 
 		return $this->useDefault($key, $default);
 	}
-
 
 	public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
 	{
@@ -86,7 +80,6 @@ final class Strategy implements CacheInterface
 		return $return;
 	}
 
-
 	public function delete(string $key): bool
 	{
 		$return = false;
@@ -97,7 +90,6 @@ final class Strategy implements CacheInterface
 		return $return;
 	}
 
-
 	public function clear(): bool
 	{
 		$return = false;
@@ -107,7 +99,6 @@ final class Strategy implements CacheInterface
 
 		return $return;
 	}
-
 
 	private function useDefault(string $key, mixed $default): mixed
 	{
@@ -121,31 +112,33 @@ final class Strategy implements CacheInterface
 		return $value;
 	}
 
-
 	public function getMultiple(iterable $keys, mixed $default = null): iterable
 	{
 		throw new InvalidStateException('Not implemented');
 	}
 
-
+	/**
+	 * @param iterable<mixed> $values
+	 */
 	public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
 	{
 		throw new InvalidStateException('Not implemented');
 	}
-
 
 	public function deleteMultiple(iterable $keys): bool
 	{
 		throw new InvalidStateException('Not implemented');
 	}
 
-
 	public function has(string $key): bool
 	{
 		throw new InvalidStateException('Not implemented');
 	}
 
-
+	/**
+	 * @param array<CacheInterface> $backup
+	 * @param array{data: mixed, ttl: int} $result
+	 */
 	private function saveToParents(array $backup, array $result, string $key): void
 	{
 		$ttl = $result['ttl'] - time();

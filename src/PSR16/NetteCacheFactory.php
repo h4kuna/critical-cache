@@ -3,6 +3,7 @@
 namespace h4kuna\CriticalCache\PSR16;
 
 use h4kuna\CriticalCache\PSR16CacheFactory;
+use h4kuna\Dir\Dir;
 use h4kuna\Dir\TempDir;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\FileStorage;
@@ -10,7 +11,7 @@ use Nette\Caching\Storages\FileStorage;
 final class NetteCacheFactory implements PSR16CacheFactory
 {
 
-	public function __construct(private TempDir $tempDir)
+	public function __construct(private Dir $tempDir)
 	{
 	}
 
