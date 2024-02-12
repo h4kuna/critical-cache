@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache;
 
@@ -11,15 +11,12 @@ class Cache implements CacheLocking
 
 	private CacheInterface $cache;
 
-
 	public function __construct(
 		private PSR16CacheFactory $cacheFactory,
 		private LockOriginal $lockOriginal,
-	)
-	{
+	) {
 		$this->createCache();
 	}
-
 
 	public function namespace(string $namespace): self
 	{
@@ -31,7 +28,6 @@ class Cache implements CacheLocking
 		return $clone;
 	}
 
-
 	/**
 	 * Without locking
 	 */
@@ -40,24 +36,20 @@ class Cache implements CacheLocking
 		return $this->cache->get($this->key($key));
 	}
 
-
 	public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
 	{
-		return $this->synchronized($key, fn (): bool => $this->cache->set($this->key($key), $value, $ttl));
+		return $this->synchronized($key, fn(): bool => $this->cache->set($this->key($key), $value, $ttl));
 	}
-
 
 	public function delete(string $key): bool
 	{
-		return $this->synchronized($key, fn (): bool => $this->cache->delete($this->key($key)));
+		return $this->synchronized($key, fn(): bool => $this->cache->delete($this->key($key)));
 	}
-
 
 	public function clear(): bool
 	{
-		return $this->synchronized(__METHOD__, fn (): bool => $this->cache->clear());
+		return $this->synchronized(__METHOD__, fn(): bool => $this->cache->clear());
 	}
-
 
 	/**
 	 * @param iterable<string> $keys
@@ -69,7 +61,6 @@ class Cache implements CacheLocking
 			yield $key => $this->get($key) ?? $default;
 		}
 	}
-
 
 	/**
 	 * @param iterable<float|int|string, mixed> $values
@@ -83,7 +74,6 @@ class Cache implements CacheLocking
 		return true;
 	}
 
-
 	/**
 	 * @param iterable<string> $keys
 	 */
@@ -96,12 +86,10 @@ class Cache implements CacheLocking
 		return true;
 	}
 
-
 	public function has(string $key): bool
 	{
-		return $this->synchronized($key, fn (): bool => $this->cache->has($this->key($key)));
+		return $this->synchronized($key, fn(): bool => $this->cache->has($this->key($key)));
 	}
-
 
 	/**
 	 * @template T
@@ -114,7 +102,7 @@ class Cache implements CacheLocking
 
 		$data = $this->cache->get($cacheKey);
 		if ($data === null) {
-			return $this->synchronized($key, function () use ($cacheKey, $callback): mixed {
+			return $this->synchronized($key, function() use ($cacheKey, $callback): mixed {
 				$data = $this->cache->get($cacheKey);
 				if ($data === null) {
 					$dependency = new Dependency();
@@ -129,7 +117,6 @@ class Cache implements CacheLocking
 		return $data;
 	}
 
-
 	/**
 	 * @template T
 	 * @param \Closure(): T $callback
@@ -140,12 +127,10 @@ class Cache implements CacheLocking
 		return $this->lockOriginal->get($this->key($key))->synchronized($callback);
 	}
 
-
 	private function key(string $key): string
 	{
-		return $this->namespace . ".$key";
+		return $this->namespace === '' ? $key : ($this->namespace . ".$key");
 	}
-
 
 	private function createCache(): void
 	{

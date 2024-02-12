@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit;
 
@@ -27,7 +27,6 @@ final class CacheTest extends TestCase
 		Assert::null($criticalSection->get('foo'));
 	}
 
-
 	public function testTTL(): void
 	{
 		$criticalSection = self::createCache(__METHOD__);
@@ -36,7 +35,6 @@ final class CacheTest extends TestCase
 		sleep(2);
 		Assert::null($criticalSection->get('foo'));
 	}
-
 
 	public function testMultiple(): void
 	{
@@ -67,7 +65,6 @@ final class CacheTest extends TestCase
 		Assert::same(['foo' => false, 'bar' => false, 'baz' => false], $data);
 	}
 
-
 	public function testNamespace(): void
 	{
 		$criticalSection = self::createCache(__METHOD__);
@@ -87,7 +84,6 @@ final class CacheTest extends TestCase
 		Assert::null($newNamespace->get('foo'));
 	}
 
-
 	public function testClear(): void
 	{
 		$criticalSection = self::createCache(__METHOD__);
@@ -104,33 +100,52 @@ final class CacheTest extends TestCase
 		Assert::null($newNamespace->get('foo'));
 	}
 
-
 	public function testLoad(): void
 	{
 		$criticalSection = self::createCache(__METHOD__);
 		$count = 0;
-		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+		$value = $criticalSection->load('testfoo', function(CriticalCache\Utils\Dependency $dependency) use (&$count) {
 			Assert::null($dependency->ttl);
 			++$count;
+
 			return 'bar';
 		});
-		Assert::same(1, $count);;
+		Assert::same(1, $count);
 		Assert::same('bar', $value);
-		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+		$value = $criticalSection->load('testfoo', function(CriticalCache\Utils\Dependency $dependency) use (&$count) {
 			Assert::null($dependency->ttl);
 			++$count;
+
 			return 'bar';
 		});
 		Assert::same(1, $count);;
 		Assert::same('bar', $value);
 	}
 
+	public function testLoadNoNamespace(): void
+	{
+		$criticalSection = self::createCache();
+		$count = 0;
+		$value = $criticalSection->load('testfoo', function(CriticalCache\Utils\Dependency $dependency, $cache, $prefix,
+		) use (&$count) {
+			Assert::null($dependency->ttl);
+			Assert::same('', $prefix);
+			++$count;
+
+			return 'bar';
+		});
+		Assert::same(1, $count);
+		Assert::same('bar', $value);
+	}
 
 	private static function createCache(string $namespace = ''): CriticalCache\Cache
 	{
 		$cache = (new CriticalCache\CacheFactory(__DIR__ . '/../../temp'))->create();
 
-		return $namespace === '' ? $cache : $cache->namespace($namespace);
+		$cache = $namespace === '' ? $cache : $cache->namespace($namespace);
+		$cache->clear();
+
+		return $cache;
 	}
 
 }
