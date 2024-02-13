@@ -8,7 +8,7 @@ use h4kuna\CriticalCache\Lock\CriticalSectionOriginal;
 use h4kuna\Dir\Dir;
 use h4kuna\Dir\TempDir;
 
-class CacheFactory
+class CacheFactory implements CacheFactoryInterface
 {
 
 	public function __construct(protected string|Dir $tempDir = '')
