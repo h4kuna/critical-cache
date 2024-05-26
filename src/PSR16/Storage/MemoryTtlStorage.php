@@ -18,7 +18,7 @@ final class MemoryTtlStorage implements Storage
 	/**
 	 * @return mixed|null
 	 */
-	public function read(string $key)
+	public function read(string $key): mixed
 	{
 		if (isset($this->data[$key]) && self::verify($this->data[$key][self::KeyDependencies])) {
 			return $this->data[$key][self::KeyData];

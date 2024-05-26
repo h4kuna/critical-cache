@@ -2,9 +2,9 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit;
 
-use h4kuna\CriticalCache\PSR16\NetteCache;
 use h4kuna\CriticalCache\Strategy;
 use h4kuna\CriticalCache\Utils\Dependency;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Storages\FileStorage;
 use Nette\Caching\Storages\MemoryStorage;
 use Nette\Utils\FileSystem;
@@ -25,8 +25,8 @@ final class StrategyTest extends TestCase
 	public function testBasic(): void
 	{
 		$tempDir = self::tempDir('basic');
-		$memoryCache = new NetteCache(new MemoryStorage());
-		$fileCache = new NetteCache(new FileStorage($tempDir));
+		$memoryCache = new PsrCacheAdapter(new MemoryStorage());
+		$fileCache = new PsrCacheAdapter(new FileStorage($tempDir));
 
 		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]);
 
@@ -44,8 +44,8 @@ final class StrategyTest extends TestCase
 	public function testDeleteClear(): void
 	{
 		$tempDir = self::tempDir('delete-clear');
-		$memoryCache = new NetteCache(new MemoryStorage()); // Memory implements CacheInterface
-		$fileCache = new NetteCache(new FileStorage($tempDir)); // File implements CacheInterface
+		$memoryCache = new PsrCacheAdapter(new MemoryStorage()); // Memory implements CacheInterface
+		$fileCache = new PsrCacheAdapter(new FileStorage($tempDir)); // File implements CacheInterface
 		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]); // add cache by priority
 
 		$strategy->set('a', 'a');
@@ -66,8 +66,8 @@ final class StrategyTest extends TestCase
 	public function testMemory(): void
 	{
 		$tempDir = self::tempDir('memory');
-		$memoryCache = new NetteCache(new MemoryStorage()); // Memory implements CacheInterface
-		$fileCache = new NetteCache(new FileStorage($tempDir)); // File implements CacheInterface
+		$memoryCache = new PsrCacheAdapter(new MemoryStorage()); // Memory implements CacheInterface
+		$fileCache = new PsrCacheAdapter(new FileStorage($tempDir)); // File implements CacheInterface
 		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]); // add cache by priority
 
 		$strategyFoo = $strategy->setStrategy($strategy::NoBreak, 'foo'); // use both cache in namespace foo
@@ -97,8 +97,8 @@ final class StrategyTest extends TestCase
 	public function testUpdateParent(): void
 	{
 		$tempDir = self::tempDir('memory-parent');
-		$memoryCache = new NetteCache(new MemoryStorage()); // Memory implements CacheInterface
-		$fileCache = new NetteCache(new FileStorage($tempDir)); // File implements CacheInterface
+		$memoryCache = new PsrCacheAdapter(new MemoryStorage()); // Memory implements CacheInterface
+		$fileCache = new PsrCacheAdapter(new FileStorage($tempDir)); // File implements CacheInterface
 		$strategy = new Strategy(['memory' => $memoryCache, 'file' => $fileCache]); // add cache by priority
 
 		$expire = time() + 80;

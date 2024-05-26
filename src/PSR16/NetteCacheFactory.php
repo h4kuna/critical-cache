@@ -4,7 +4,7 @@ namespace h4kuna\CriticalCache\PSR16;
 
 use h4kuna\CriticalCache\PSR16CacheFactory;
 use h4kuna\Dir\Dir;
-use h4kuna\Dir\TempDir;
+use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Storage;
 use Nette\Caching\Storages\FileStorage;
 
@@ -16,9 +16,9 @@ final class NetteCacheFactory implements PSR16CacheFactory
 	}
 
 
-	public function create(string $namespace): NetteCache
+	public function create(string $namespace): PsrCacheAdapter
 	{
-		return new NetteCache($this->createStorage($namespace));
+		return new PsrCacheAdapter($this->createStorage($namespace));
 	}
 
 

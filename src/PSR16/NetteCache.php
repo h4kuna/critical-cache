@@ -4,9 +4,12 @@ namespace h4kuna\CriticalCache\PSR16;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
-use Nette\NotImplementedException;
 use Psr\SimpleCache\CacheInterface;
 
+/**
+ * @deprecated use see
+ * @see \Nette\Bridges\Psr\PsrCacheAdapter
+ */
 final class NetteCache implements CacheInterface
 {
 	public function __construct(private Storage $storage)
@@ -54,15 +57,14 @@ final class NetteCache implements CacheInterface
 
 	public function getMultiple(iterable $keys, mixed $default = null): iterable
 	{
-		foreach ($keys as $key => $name) {
-			assert(is_string($key) || is_int($key) || is_float($key));
-			yield (string) $key => $this->get($name, $default);
+		foreach ($keys as $name) {
+			yield $name => $this->get($name, $default);
 		}
 	}
 
 
 	/**
-	 * @param iterable<string|int|float, mixed> $values
+	 * @param iterable<string|int, mixed> $values
 	 */
 	public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
 	{
