@@ -84,11 +84,7 @@ final class MemoryTtlStorage implements Storage
 	 */
 	private static function verify(array $meta): bool
 	{
-		if (isset($meta[self::KeyTtl]) && ($meta[self::KeyTtl] - self::micro()) <= 0) {
-			return false;
-		}
-
-		return true;
+		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= self::micro());
 	}
 
 

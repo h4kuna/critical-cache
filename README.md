@@ -6,8 +6,12 @@
 The library extends PSR-16 about locking when write or delete to cache.
 
 ### Installation to project
-```sh
-$ composer require h4kuna/critical-cache
+```bash
+composer require h4kuna/critical-cache
+```
+Optional
+```bash
+composer require h4kuna/dir malkusch/lock nette/caching
 ```
 
 ### How to use

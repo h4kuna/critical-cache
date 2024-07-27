@@ -6,13 +6,12 @@ use h4kuna\CriticalCache\Exceptions\OpenFileFailedException;
 use h4kuna\CriticalCache\Lock;
 use h4kuna\CriticalCache\LockOriginal;
 use h4kuna\Dir\Dir;
-use h4kuna\Dir\TempDir;
-use h4kuna\Memoize\MemoryStorage;
+use h4kuna\Memoize\Memoize;
 use malkusch\lock\mutex\FlockMutex;
 
 final class CriticalSectionOriginal implements LockOriginal
 {
-	use MemoryStorage;
+	use Memoize;
 
 	public function __construct(private Dir $tempDir)
 	{

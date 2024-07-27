@@ -8,6 +8,9 @@ use h4kuna\CriticalCache\Exceptions\InvalidStateException;
 use h4kuna\CriticalCache\Utils\Dependency;
 use Psr\SimpleCache\CacheInterface;
 
+/**
+ * @deprecated use CachePool
+ */
 final class Strategy implements CacheInterface
 {
 	public const NoBreak = null;
