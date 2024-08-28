@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Storage;
 
-use h4kuna\CriticalCache\PSR16\Storage\MemoryTtlStorage;
+use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use Nette\Caching\Cache;
 use Tester\Assert;
 use Tester\TestCase;

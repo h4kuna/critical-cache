@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace h4kuna\CriticalCache;
+namespace h4kuna\CriticalCache\PSR16;
 
 use Psr\SimpleCache\CacheInterface;
 

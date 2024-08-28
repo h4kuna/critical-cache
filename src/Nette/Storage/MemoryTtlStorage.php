@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace h4kuna\CriticalCache\PSR16\Storage;
+namespace h4kuna\CriticalCache\Nette\Storage;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
@@ -28,16 +28,23 @@ final class MemoryTtlStorage implements Storage
 		return null;
 	}
 
+	/**
+	 * @param array<string, mixed> $meta
+	 */
+	private static function verify(array $meta): bool
+	{
+		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= self::micro());
+	}
+
+	private static function micro(): float
+	{
+		return microtime(true);
+	}
 
 	public function lock(string $key): void
 	{
 	}
 
-
-	/**
-	 * @param mixed $data
-	 * @param array<string, mixed> $dependencies
-	 */
 	public function write(string $key, $data, array $dependencies): void
 	{
 		$this->data[$key] = [
@@ -46,28 +53,6 @@ final class MemoryTtlStorage implements Storage
 		];
 	}
 
-
-	public function remove(string $key): void
-	{
-		unset($this->data[$key]);
-	}
-
-
-	/**
-	 * @param array<string, mixed> $conditions
-	 */
-	public function clean(array $conditions): void
-	{
-		if (isset($conditions[Cache::All])) {
-			$this->data = [];
-		}
-	}
-
-
-	/**
-	 * @param array<string, mixed> $dependencies
-	 * @return array<string, mixed>
-	 */
 	private static function validate(array $dependencies): array
 	{
 		if (isset($dependencies[Cache::Expire])) {
@@ -78,19 +63,16 @@ final class MemoryTtlStorage implements Storage
 		return $dependencies;
 	}
 
-
-	/**
-	 * @param array<string, mixed> $meta
-	 */
-	private static function verify(array $meta): bool
+	public function remove(string $key): void
 	{
-		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= self::micro());
+		unset($this->data[$key]);
 	}
 
-
-	private static function micro(): float
+	public function clean(array $conditions): void
 	{
-		return microtime(true);
+		if (isset($conditions[Cache::All])) {
+			$this->data = [];
+		}
 	}
 
 }

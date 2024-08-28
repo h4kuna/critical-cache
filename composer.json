@@ -12,12 +12,13 @@
   ],
   "require": {
     "php": ">=8.0",
-    "h4kuna/memoize": "^0.1.5",
+    "h4kuna/memoize": "^0.1.7",
     "psr/clock": "^1.0",
     "psr/simple-cache": "^3.0"
   },
   "require-dev": {
-    "h4kuna/dir": "^0.1.2",
+    "beste/clock": "^3.0",
+    "h4kuna/dir": "^0.1.7",
     "malkusch/lock": "^2.2",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
@@ -45,7 +46,7 @@
     "sort-packages": true
   },
   "scripts": {
-    "phpstan": "vendor/bin/phpstan analyse",
+    "stan": "vendor/bin/phpstan analyse",
     "tests": "vendor/bin/tester --colors 1 -s -C tests/src",
     "coverage": "vendor/bin/tester --coverage coverage.html --coverage-src src/ --colors 1 -s -C tests/src"
   },

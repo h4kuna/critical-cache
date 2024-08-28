@@ -6,6 +6,7 @@ namespace h4kuna\CriticalCache\Tests\Unit\PSR16;
 
 use Closure;
 use DateInterval;
+use DateTimeImmutable;
 use h4kuna\CriticalCache\PSR16\Expire;
 use h4kuna\CriticalCache\Tests\ClockTest;
 use Tester\Assert;
@@ -33,6 +34,9 @@ final class ExpireTest extends TestCase
 			[static function (self $self) {
 				$self->assert(94694400, new DateInterval('P3Y'));
 			}],
+			[static function (self $self) {
+				$self->assert(5, (new DateTimeImmutable())->setTimestamp(ClockTest::Time)->modify('+5 seconds'));
+			}],
 		];
 	}
 
@@ -47,7 +51,7 @@ final class ExpireTest extends TestCase
 		$assert($this);
 	}
 
-	public function assert(?int $expected, int|null|DateInterval $ttl): void
+	public function assert(?int $expected, int|null|DateInterval|DateTimeImmutable $ttl): void
 	{
 		$factory = new ClockTest();
 		Assert::same($expected, Expire::after($ttl, $factory));

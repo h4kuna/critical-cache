@@ -2,7 +2,9 @@
 
 namespace h4kuna\CriticalCache\Exceptions;
 
-final class OpenFileFailedException extends \RuntimeException
+use RuntimeException;
+
+final class OpenFileFailedException extends RuntimeException
 {
 
 }

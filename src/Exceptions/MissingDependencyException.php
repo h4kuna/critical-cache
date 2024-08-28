@@ -2,11 +2,13 @@
 
 namespace h4kuna\CriticalCache\Exceptions;
 
+use Beste\Clock\SystemClock;
 use h4kuna\Dir\Dir;
-use malkusch\lock\mutex\LockMutex;
+use malkusch\lock\mutex\Mutex;
 use Nette\Caching\Storages\FileStorage;
+use RuntimeException;
 
-final class MissingDependencyException extends \RuntimeException
+final class MissingDependencyException extends RuntimeException
 {
 
 	public static function checkNetteCaching(): void
@@ -16,6 +18,10 @@ final class MissingDependencyException extends \RuntimeException
 		}
 	}
 
+	private static function create(string $class, string $package): self
+	{
+		return new self("Missing class \"$class\", you can install by: composer require $package");
+	}
 
 	public static function checkH4kunaDir(): void
 	{
@@ -24,18 +30,18 @@ final class MissingDependencyException extends \RuntimeException
 		}
 	}
 
-
-	public static function checkMalkuschLock(): void
+	public static function checkBesteClock(): void
 	{
-		if (class_exists(LockMutex::class) === false) {
-			throw self::create(LockMutex::class, 'malkusch/lock');
+		if (class_exists(SystemClock::class) === false) {
+			throw self::create(SystemClock::class, 'beste/clock');
 		}
 	}
 
-
-	private static function create(string $class, string $package): self
+	public static function checkMalkuschLock(): void
 	{
-		return new self("Missing class \"$class\", you can install by: composer require $package");
+		if (class_exists(Mutex::class) === false) {
+			throw self::create(Mutex::class, 'malkusch/lock');
+		}
 	}
 
 }

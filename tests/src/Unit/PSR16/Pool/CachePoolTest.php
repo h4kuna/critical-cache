@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
-namespace h4kuna\CriticalCache\Tests\Unit;
+namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Pool;
 
-use h4kuna\CriticalCache\CachePool;
-use h4kuna\CriticalCache\PSR20\Clock;
+use Beste\Clock\SystemClock;
+use h4kuna\CriticalCache\PSR16\Pool\CachePool;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Storages\MemoryStorage;
 use Tester\Assert;
 use Tester\TestCase;
 
-require __DIR__ . '/../bootstrap.php';
+require __DIR__ . '/../../../bootstrap.php';
 
 /**
  * @testCase
@@ -24,7 +24,7 @@ final class CachePoolTest extends TestCase
 		$cachePool = new CachePool([
 			$cache1,
 			$cache2,
-		], new Clock());
+		], SystemClock::create());
 
 		// get & set
 		Assert::null($cachePool->get('foo.test'));

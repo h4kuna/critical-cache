@@ -2,8 +2,10 @@
 
 namespace h4kuna\CriticalCache\Utils;
 
+use DateInterval;
+
 final class Dependency
 {
-	public \DateInterval|int|null $ttl = null;
+	public DateInterval|int|null $ttl = null;
 
 }

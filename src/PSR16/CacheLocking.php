@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace h4kuna\CriticalCache;
+namespace h4kuna\CriticalCache\PSR16;
 
 use Closure;
 use h4kuna\CriticalCache\Utils\Dependency;
@@ -12,6 +12,7 @@ interface CacheLocking extends CacheInterface
 	/**
 	 * @template T
 	 * @param Closure(Dependency, CacheInterface, string): T $callback
+	 *
 	 * @return T
 	 */
 	function load(string $key, Closure $callback);
@@ -20,6 +21,7 @@ interface CacheLocking extends CacheInterface
 	/**
 	 * @template T
 	 * @param Closure(): T $callback
+	 *
 	 * @return T
 	 */
 	function synchronized(string $key, Closure $callback);
