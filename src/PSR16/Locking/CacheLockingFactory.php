@@ -15,6 +15,7 @@ use h4kuna\Dir\TempDir;
 final class CacheLockingFactory implements CacheLockingFactoryInterface
 {
 	private PSR16CacheFactory $cacheFactory;
+
 	private LockOriginal $lockOriginal;
 
 	public function __construct(
@@ -47,7 +48,6 @@ final class CacheLockingFactory implements CacheLockingFactoryInterface
 
 		return new NetteCacheFactory($dir->dir('h4kuna/cache'));
 	}
-
 
 	private static function createLockOriginal(Dir $dir): LockOriginal
 	{

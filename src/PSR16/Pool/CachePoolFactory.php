@@ -27,7 +27,6 @@ final class CachePoolFactory implements CachePoolFactoryInterface
 		return SystemClock::create();
 	}
 
-
 	public function create(string|array $namespace = ''): CacheInterface
 	{
 		return new CachePool(

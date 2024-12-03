@@ -11,9 +11,8 @@ final class MemoryTtlStorage implements Storage
 	private const KeyData = 'data';
 	private const KeyDependencies = 'dependencies';
 
-	/** @var array<mixed, array{data: mixed, dependencies: array<string, mixed>}> */
+	/** @var array<string, array{data: mixed, dependencies: array{expire?: float}}> */
 	private array $data = [];
-
 
 	/**
 	 * @return mixed|null
@@ -53,14 +52,18 @@ final class MemoryTtlStorage implements Storage
 		];
 	}
 
+	/**
+	 * @return array{expire?: float}
+	 */
 	private static function validate(array $dependencies): array
 	{
-		if (isset($dependencies[Cache::Expire])) {
-			$dependencies[self::KeyTtl] = self::micro() + $dependencies[Cache::Expire];
+		$out = [];
+		if (isset($dependencies[Cache::Expire]) && is_numeric($dependencies[Cache::Expire])) {
+			$out[self::KeyTtl] = self::micro() + $dependencies[Cache::Expire];
 			unset($dependencies[Cache::Expire]);
 		}
 
-		return $dependencies;
+		return $out;
 	}
 
 	public function remove(string $key): void

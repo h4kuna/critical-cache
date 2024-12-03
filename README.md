@@ -60,3 +60,35 @@ By default, is used [nette/caching](//github.com/nette/caching) with PSR16 adapt
 
 ## Clock PSR-20
 internal cache system beste/clock
+
+# Services
+
+## [UseOneTimeService](src/Services/UseOneTimeService.php)
+
+The service is usable for token and use one time.
+
+```php
+/** @var \h4kuna\CriticalCache\Services\UseOneTimeService $useOneTimeService */
+$timeToLive = 900; // seconds
+$useOneTimeService->save('foo', 'token', $timeToLive);
+// after 900 seconds or one call $useOneTimeService::get() is removed from cache 
+
+$useOneTimeService->get('foo'); // token
+$useOneTimeService->get('foo'); // null
+```
+
+## [ValidToService](src/Services/ValidToService.php)
+
+The service tell you if anything is valid, you can choose date range for valid window.
+
+```php
+/** @var \h4kuna\CriticalCache\Services\ValidService $validToService */
+$validToService->set('foo', new DateTime('tomorrow midnight')); // from is null it is mean now
+$validToService->isValid('foo'); // true from 'now' to 'tomorrow midnight'
+$validToService->value('foo'); // return empty string if is valid and null if is invalid
+$validToService->from('foo'); // null mean unlimited or DateTimeImmutable
+$validToService->to('foo'); // null mean does not exist or DateTimeImmutable
+$validToService->isValid('foo'); // true the time is in range, false is out of range
+
+$validToService->set('bar', new DateTime('tomorrow midnight'), new DateTime('+5 minutes'), 'lorem'); // the string 'lorem' it will be a valid after 5 minutes
+```

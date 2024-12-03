@@ -15,12 +15,10 @@ final class NetteCacheFactory implements PSR16CacheFactory
 	{
 	}
 
-
 	public function create(string $namespace = ''): PsrCacheAdapter
 	{
 		return new PsrCacheAdapter($this->createStorage($namespace));
 	}
-
 
 	private function createStorage(string $namespace): Storage
 	{

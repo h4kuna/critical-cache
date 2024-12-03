@@ -16,11 +16,6 @@ parameters:
 			path: src/Nette/Storage/MemoryTtlStorage.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:validate\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Nette/Storage/MemoryTtlStorage.php
-
-		-
 			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:write\\(\\) has parameter \\$data with no type specified\\.$#"
 			count: 1
 			path: src/Nette/Storage/MemoryTtlStorage.php

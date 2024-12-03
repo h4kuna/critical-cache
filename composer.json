@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=8.0",
+    "php": ">=8.2",
     "h4kuna/memoize": "^0.1.7",
     "psr/clock": "^1.0",
     "psr/simple-cache": "^3.0"
@@ -23,8 +23,9 @@
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
     "orisai/clock": "^1.2",
-    "phpstan/phpstan": "^1.8",
-    "phpstan/phpstan-strict-rules": "^1.4",
+    "phpstan/phpstan": "^2.0",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpstan/phpstan-strict-rules": "^2.0",
     "tracy/tracy": "^2.9"
   },
   "autoload": {
@@ -37,18 +38,17 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "h4kuna\\CriticalCache\\Tests\\": [
-        "tests/src"
-      ]
+      "h4kuna\\CriticalCache\\Tests\\": "tests/src"
     }
   },
   "config": {
     "sort-packages": true
   },
   "scripts": {
+    "coverage": "vendor/bin/tester --coverage coverage.html --coverage-src src/ --colors 1 -s -C tests/src",
+    "qa": "composer stan && composer tests",
     "stan": "vendor/bin/phpstan analyse",
-    "tests": "vendor/bin/tester --colors 1 -s -C tests/src",
-    "coverage": "vendor/bin/tester --coverage coverage.html --coverage-src src/ --colors 1 -s -C tests/src"
+    "tests": "vendor/bin/tester --colors 1 -s -C tests/src"
   },
   "suggest": {
     "malkusch/lock": "As default implementation for Lock system.",

@@ -11,7 +11,6 @@ final class CriticalSection implements Lock\Lock
 	{
 	}
 
-
 	public function synchronized(callable $callback)
 	{
 		return $this->lockMutex->synchronized($callback);

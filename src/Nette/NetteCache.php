@@ -47,6 +47,7 @@ final class NetteCache implements CacheInterface
 		$ttl = self::ttlToSeconds($ttl);
 
 		foreach ($values as $key => $value) {
+			/** @var int|string $key */
 			$this->set((string) $key, $value, $ttl);
 		}
 

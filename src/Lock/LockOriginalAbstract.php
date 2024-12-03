@@ -4,7 +4,6 @@ namespace h4kuna\CriticalCache\Lock;
 
 use h4kuna\Memoize\Memoize;
 
-
 abstract class LockOriginalAbstract implements LockOriginal
 {
 	use Memoize;

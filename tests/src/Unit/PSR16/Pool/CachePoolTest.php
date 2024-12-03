@@ -41,7 +41,6 @@ final class CachePoolTest extends TestCase
 		$cachePool->set('foo.test', null);
 		Assert::false($cachePool->has('foo.test'));
 
-
 		// delete
 		$cachePool->set('foo.test', 'bar');
 		Assert::true($cachePool->has('foo.test'));

@@ -57,6 +57,7 @@ final class CacheLock implements CacheLocking
 	{
 		$return = false;
 		foreach ($values as $key => $value) {
+			/** @var int|string $key */
 			$return = $this->set((string) $key, $value, $ttl) || $return;
 		}
 

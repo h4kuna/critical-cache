@@ -7,33 +7,34 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Clock\ClockInterface;
 
+/**
+ * @phpstan-type TypeKey string|int|float|list<string|int|float>
+ */
 final class Expire
 {
 	public static function at(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
 	{
+		return self::toDate($ttl, $clock)?->getTimestamp();
+	}
+
+	public static function toDate(
+		int|null|DateInterval|DateTimeInterface $ttl,
+		?ClockInterface $clock = null,
+	): ?DateTimeInterface {
 		if ($ttl === null) {
 			return null;
 		} elseif (is_int($ttl)) {
-			return self::fromInt($ttl, self::createDateTimeImmutable($clock));
+			return self::createDateTimeImmutable($clock)->modify("$ttl seconds");
 		} elseif ($ttl instanceof DateTimeInterface) {
-			return $ttl->getTimestamp();
+			return $ttl;
 		}
-		return self::fromInterval($ttl, self::createDateTimeImmutable($clock));
-	}
 
-	public static function fromInt(int $ttl, DateTimeImmutable $now): int
-	{
-		return $now->getTimestamp() + $ttl;
+		return self::createDateTimeImmutable($clock)->add($ttl);
 	}
 
 	private static function createDateTimeImmutable(?ClockInterface $clock = null): DateTimeImmutable
 	{
 		return $clock === null ? new DateTimeImmutable() : $clock->now();
-	}
-
-	public static function fromInterval(DateInterval $dateInterval, DateTimeImmutable $now): int
-	{
-		return $now->add($dateInterval)->getTimestamp();
 	}
 
 	public static function after(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
@@ -46,9 +47,18 @@ final class Expire
 		if ($ttl instanceof DateTimeInterface) {
 			$timestamp = $ttl->getTimestamp();
 		} else {
-			$timestamp = self::fromInterval($ttl, $now);
+			$timestamp = $now->add($ttl)->getTimestamp();
 		}
 
 		return $timestamp - $now->getTimestamp();
 	}
+
+	/**
+	 * @param TypeKey $key
+	 */
+	public static function key(string|int|float|array $key): string
+	{
+		return implode("\x00", (array) $key);
+	}
+
 }

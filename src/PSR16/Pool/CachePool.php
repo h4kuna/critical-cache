@@ -13,7 +13,6 @@ final class CachePool implements CacheInterface
 	private const KeyTtl = 'ttl';
 	private const KeyData = 'data';
 
-
 	/**
 	 * @param array<CacheInterface> $caches
 	 */
@@ -59,7 +58,7 @@ final class CachePool implements CacheInterface
 	}
 
 	/**
-	 * @param array<CacheInterface>         $backup
+	 * @param array<CacheInterface> $backup
 	 * @param array{data: mixed, ttl: ?int} $result
 	 */
 	private function saveToParents(array $backup, array $result, string $key): void
@@ -107,7 +106,8 @@ final class CachePool implements CacheInterface
 	{
 		$return = false;
 		foreach ($values as $key => $value) {
-			$return = $this->set($key, $value, $ttl) || $return;
+			/** @var int|string $key */
+			$return = $this->set((string) $key, $value, $ttl) || $return;
 		}
 
 		return $return;

@@ -29,6 +29,18 @@ final class CacheLockTest extends TestCase
 		Assert::null($criticalSection->get('foo'));
 	}
 
+	private static function createCache(string $namespace = ''): CacheLocking
+	{
+		if ($namespace !== '') {
+			$namespace = '/' . str_replace(['\\', '::'], '_', $namespace);
+		}
+
+		$cache = (new CacheLockingFactory(__DIR__ . '/../../../../temp' . $namespace))->create();
+		$cache->clear();
+
+		return $cache;
+	}
+
 	public function testTTL(): void
 	{
 		$criticalSection = self::createCache(__FUNCTION__);
@@ -104,9 +116,11 @@ final class CacheLockTest extends TestCase
 	{
 		$criticalSection = self::createCache(__FUNCTION__);
 		$count = 0;
-		$value = $criticalSection->load('testfoo', function(
-			CriticalCache\Utils\Dependency $dependency, $cache, $prefix) use (&$count) {
-
+		$value = $criticalSection->load('testfoo', function (
+			CriticalCache\Utils\Dependency $dependency,
+			$cache,
+			$prefix,
+		) use (&$count) {
 			Assert::null($dependency->ttl);
 			Assert::same('testfoo', $prefix);
 			++$count;
@@ -115,18 +129,6 @@ final class CacheLockTest extends TestCase
 		});
 		Assert::same(1, $count);
 		Assert::same('bar', $value);
-	}
-
-	private static function createCache(string $namespace = ''): CacheLocking
-	{
-		if ($namespace !== '') {
-			$namespace = '/' . str_replace(['\\', '::'], '_', $namespace);
-		}
-
-		$cache = (new CacheLockingFactory(__DIR__ . '/../../../../temp' . $namespace))->create();
-		$cache->clear();
-
-		return $cache;
 	}
 
 }

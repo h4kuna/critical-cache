@@ -17,7 +17,6 @@ interface CacheLocking extends CacheInterface
 	 */
 	function load(string $key, Closure $callback);
 
-
 	/**
 	 * @template T
 	 * @param Closure(): T $callback
