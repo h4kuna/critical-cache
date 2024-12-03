@@ -15,7 +15,7 @@ final class CachePoolFactory implements CachePoolFactoryInterface
 
 	public function __construct(
 		private PSR16CacheFactory $cacheFactory,
-		ClockInterface $clock = null,
+		?ClockInterface $clock = null,
 	) {
 		$this->clock = $clock ?? self::createClock();
 	}

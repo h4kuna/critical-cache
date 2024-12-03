@@ -22,7 +22,6 @@
     "malkusch/lock": "^2.2",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
-    "orisai/clock": "^1.2",
     "phpstan/phpstan": "^2.0",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "phpstan/phpstan-strict-rules": "^2.0",
