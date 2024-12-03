@@ -4,6 +4,10 @@ namespace h4kuna\CriticalCache\Services;
 
 use h4kuna\CriticalCache\Contracts\TokenGeneratorContract;
 
+/**
+ * uuid v4 implementation
+ * @see https://stackoverflow.com/questions/2040240/php-function-to-generate-v4-uuid#answer-15875555
+ */
 final class TokenGenerator implements TokenGeneratorContract
 {
 	public function generate(): string
