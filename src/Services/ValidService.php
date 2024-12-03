@@ -14,11 +14,11 @@ use Psr\SimpleCache\CacheInterface;
 /**
  * @phpstan-import-type TypeRange from DateRangeStore
  */
-final class ValidService implements ValidServiceContract
+final readonly class ValidService implements ValidServiceContract
 {
 	public function __construct(
-		private readonly CacheInterface $cache,
-		private readonly ClockInterface $clock,
+		private CacheInterface $cache,
+		private ClockInterface $clock,
 	) {
 	}
 

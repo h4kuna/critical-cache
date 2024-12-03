@@ -13,21 +13,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 final class UseOneTimeServiceTest extends TestCase
 {
-	/**
-	 * @return array<string|int, array{0: Closure(static):void}>
-	 */
-	public static function data(): array
-	{
-		return [
-			[
-				static function (self $self) {
-					$self->assert();
-				},
-			],
-		];
-	}
-
-	public function assert(): void
+	public function testBasic(): void
 	{
 		$service = new UseOneTimeService(new PsrCacheAdapter(new MemoryTtlStorage()));
 
@@ -40,15 +26,6 @@ final class UseOneTimeServiceTest extends TestCase
 		Assert::same('Lorem', $service->save('foo', 'Lorem', 2));
 		sleep(2);
 		Assert::null($service->get('foo'));
-	}
-
-	/**
-	 * @param Closure(static):void $assert
-	 * @dataProvider data
-	 */
-	public function testBasic(Closure $assert): void
-	{
-		$assert($this);
 	}
 }
 

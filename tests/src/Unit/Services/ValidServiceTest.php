@@ -2,7 +2,6 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
-use Closure;
 use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\Services\ValidService;
 use h4kuna\CriticalCache\Tests\ClockTest;
@@ -14,21 +13,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 final class ValidServiceTest extends TestCase
 {
-	/**
-	 * @return array<string|int, array{0: Closure(static):void}>
-	 */
-	public static function data(): array
-	{
-		return [
-			[
-				static function (self $self) {
-					$self->assert();
-				},
-			],
-		];
-	}
-
-	public function assert(): void
+	public function testBasic(): void
 	{
 		$service = new ValidService(new PsrCacheAdapter(new MemoryTtlStorage()), new ClockTest(0));
 
@@ -57,15 +42,6 @@ final class ValidServiceTest extends TestCase
 		Assert::same($service->to('foo')?->format(\DateTimeInterface::RFC3339), $now->modify('+1 second')->format(\DateTimeInterface::RFC3339));
 		sleep(1);
 		Assert::false($service->isValid('foo'), 'after expire');
-	}
-
-	/**
-	 * @param Closure(static):void $assert
-	 * @dataProvider data
-	 */
-	public function testBasic(Closure $assert): void
-	{
-		$assert($this);
 	}
 }
 

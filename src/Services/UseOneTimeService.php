@@ -7,10 +7,10 @@ use h4kuna\CriticalCache\Contracts\UseOneTimeServiceContract;
 use h4kuna\CriticalCache\Exceptions\BrokenCacheException;
 use Psr\SimpleCache\CacheInterface;
 
-final class UseOneTimeService implements UseOneTimeServiceContract
+final readonly class UseOneTimeService implements UseOneTimeServiceContract
 {
 	public function __construct(
-		private readonly CacheInterface $cache,
+		private CacheInterface $cache,
 	) {
 	}
 
