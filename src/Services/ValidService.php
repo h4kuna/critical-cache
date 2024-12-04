@@ -13,6 +13,7 @@ use Psr\SimpleCache\CacheInterface;
 
 /**
  * @phpstan-import-type TypeRange from DateRangeStore
+ * @phpstan-import-type TypeSave from DateRangeStore
  */
 final readonly class ValidService implements ValidServiceContract
 {
@@ -42,10 +43,10 @@ final readonly class ValidService implements ValidServiceContract
 	private function decode(string $key): array
 	{
 		$value = $this->cache->get($key);
-		if (is_string($value) === false) {
-			$value = '';
+		if (is_array($value) === false) {
+			$value = [];
 		}
-
+		/** @var TypeSave $value */
 		return DateRangeStore::decode($value);
 	}
 
@@ -76,7 +77,10 @@ final readonly class ValidService implements ValidServiceContract
 		$this->cache->set($key, $this->encode($validFrom, $dateTo, $value), $this->clock->now()->diff($dateTo));
 	}
 
-	private function encode(int|DateInterval|DateTimeInterface|null $from, DateTimeInterface $to, string $value): string
+	/**
+	 * @return TypeSave
+	 */
+	private function encode(int|DateInterval|DateTimeInterface|null $from, DateTimeInterface $to, string $value): array
 	{
 		return DateRangeStore::encode(Expire::toDate($from, $this->clock), $to, $value);
 	}

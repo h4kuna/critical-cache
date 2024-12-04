@@ -6,7 +6,10 @@ use h4kuna\CriticalCache\Contracts\TokenGeneratorContract;
 
 /**
  * uuid v4 implementation
- * @see https://stackoverflow.com/questions/2040240/php-function-to-generate-v4-uuid#answer-15875555
+ * @see https://www.uuidgenerator.net/dev-corner/php
+ *
+ * implement own generator
+ * @see https://github.com/ramsey/uuid
  */
 final class TokenGenerator implements TokenGeneratorContract
 {
