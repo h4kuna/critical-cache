@@ -29,6 +29,6 @@ final readonly class TokenService implements TokenServiceContract
 
 	public function compare(string $token, string $value = self::CacheValue): bool
 	{
-		return $this->useOneTimeService->get($token) === $value;
+		return $this->get($token) === $value;
 	}
 }

@@ -77,7 +77,7 @@ $useOneTimeService->get('foo'); // token
 $useOneTimeService->get('foo'); // null
 ```
 
-## [ValidToService](src/Services/ValidToService.php)
+## [ValidService](src/Services/ValidService.php)
 
 The service tell you if anything is valid, you can choose date range for valid window.
 
@@ -91,4 +91,21 @@ $validToService->to('foo'); // null mean does not exist or DateTimeImmutable
 $validToService->isValid('foo'); // true the time is in range, false is out of range
 
 $validToService->set('bar', new DateTime('tomorrow midnight'), new DateTime('+5 minutes'), 'lorem'); // the string 'lorem' it will be a valid after 5 minutes
+```
+
+## [TokenService](src/Services/TokenService.php)
+
+The service generate token and keep it for defined time.
+
+```php
+/** @var \h4kuna\CriticalCache\Services\TokenService $tokenService */
+$token = $tokenService->make(); // return string token by default uuid v4
+
+dump($tokenService->compare($token)); // true / false
+
+// if you want compare your self let use get()
+$token = $tokenService->make(value: 'lorem');
+$value = $tokenService->get($token); // lorem
+
+$tokenService->compare(value: $value); // false because you use get()
 ```
