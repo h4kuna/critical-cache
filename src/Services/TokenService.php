@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Services;
 
-use h4kuna\CriticalCache\Contracts\TokenGeneratorContract;
+use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
 use h4kuna\CriticalCache\Contracts\TokenServiceContract;
 use h4kuna\CriticalCache\Contracts\UseOneTimeServiceContract;
 
@@ -10,7 +10,7 @@ final readonly class TokenService implements TokenServiceContract
 {
 	public function __construct(
 		private UseOneTimeServiceContract $useOneTimeService,
-		private TokenGeneratorContract $tokenGenerator,
+		private RandomGeneratorContract $tokenGenerator,
 	) {
 	}
 

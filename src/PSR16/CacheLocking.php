@@ -19,7 +19,7 @@ interface CacheLocking extends CacheInterface
 
 	/**
 	 * @template T
-	 * @param Closure(): T $callback
+	 * @param Closure(CacheInterface): T $callback
 	 *
 	 * @return T
 	 */
