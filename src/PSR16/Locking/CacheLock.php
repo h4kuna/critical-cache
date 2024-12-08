@@ -19,18 +19,12 @@ final class CacheLock implements CacheLocking
 
 	public function clear(): bool
 	{
-		return $this->synchronized(__METHOD__, fn (): bool => $this->cache->clear());
+		return $this->synchronized(__METHOD__, static fn (CacheInterface $cache): bool => $cache->clear());
 	}
 
-	/**
-	 * @template T
-	 * @param Closure(): T $callback
-	 *
-	 * @return T
-	 */
 	public function synchronized(string $key, Closure $callback)
 	{
-		return $this->lockOriginal->get($key)->synchronized($callback);
+		return $this->lockOriginal->get($key)->synchronized(fn () => $callback($this->cache));
 	}
 
 	/**
@@ -66,7 +60,7 @@ final class CacheLock implements CacheLocking
 
 	public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
 	{
-		return $this->synchronized($key, fn (): bool => $this->cache->set($key, $value, $ttl));
+		return $this->synchronized("_lock.$key", static fn (CacheInterface $cache): bool => $cache->set($key, $value, $ttl));
 	}
 
 	/**
@@ -84,7 +78,7 @@ final class CacheLock implements CacheLocking
 
 	public function delete(string $key): bool
 	{
-		return $this->synchronized($key, fn (): bool => $this->cache->delete($key));
+		return $this->synchronized($key, static fn (CacheInterface $cache): bool => $cache->delete($key));
 	}
 
 	public function has(string $key): bool
@@ -102,12 +96,12 @@ final class CacheLock implements CacheLocking
 	{
 		$data = $this->cache->get($key);
 		if ($data === null) {
-			return $this->synchronized($key, function () use ($key, $callback): mixed {
-				$data = $this->cache->get($key);
+			return $this->synchronized($key, static function (CacheInterface $cache) use ($key, $callback): mixed {
+				$data = $cache->get($key);
 				if ($data === null) {
 					$dependency = new Dependency();
-					$data = $callback($dependency, $this->cache, $key);
-					$this->cache->set($key, $data, $dependency->ttl);
+					$data = $callback($dependency, $cache, $key);
+					$cache->set($key, $data, $dependency->ttl);
 				}
 
 				return $data;

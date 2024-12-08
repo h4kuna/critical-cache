@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Contracts;
 
-interface TokenGeneratorContract
+interface RandomGeneratorContract
 {
-	public function generate(): string;
+	public function execute(): string;
 }

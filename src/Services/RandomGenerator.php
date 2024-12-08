@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Services;
 
-use h4kuna\CriticalCache\Contracts\TokenGeneratorContract;
+use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
 
 /**
  * uuid v4 implementation
@@ -11,9 +11,9 @@ use h4kuna\CriticalCache\Contracts\TokenGeneratorContract;
  * implement own generator
  * @see https://github.com/ramsey/uuid
  */
-final class TokenGenerator implements TokenGeneratorContract
+final class RandomGenerator implements RandomGeneratorContract
 {
-	public function generate(): string
+	public function execute(): string
 	{
 		$data = random_bytes(16);
 

@@ -109,3 +109,48 @@ $value = $tokenService->get($token); // lorem
 
 $tokenService->compare(value: $value); // false because you use get()
 ```
+
+## [UniqueHashQueueService](src/Services/UniqueHashQueueService.php)
+
+The service generate unique values, witch check mechanism with source for example, with database. Create lock for critical section get one unique values from queue.
+
+For example, we use [RandomGeneratorMock](tests/src/Mock/RandomGeneratorMock.php), the class generate alphabet, A, B, C, D ... Z, AA...
+
+```php
+$checkUniqueValue = new class implements \h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface  {
+    
+    public function __construct(
+        private RandomGeneratorContract $randomGenerator = new \h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock(),
+    ) {
+    }
+    
+    public function check(array $data): iterable {
+        // example: $data = ['A', 'B', 'C', 'D', 'E'];
+        // SELECT unique_column FROM foo WHERE unique_column IN ('A', 'B', 'C');
+        // return matched values, for example B, C
+        
+        yield 'B';
+        yield 'C';
+        // or
+        return ['B', 'C'];
+    }
+    
+    public function getQueueSize(): int {
+        return  20;
+    }
+
+	public function getRandomGenerator(): RandomGeneratorContract {
+	    return  $this->randomGenerator;
+	}
+
+	public function getTries(): ?int {
+	    return null;
+	}
+};
+
+/** @var \h4kuna\CriticalCache\Services\UniqueHashQueueService $uniqueHash */
+$value = $uniqueHash->execute($checkUniqueValue); // random unique value, A
+$value = $uniqueHash->execute($checkUniqueValue); // random unique value, D
+$value = $uniqueHash->execute($checkUniqueValue); // random unique value, E
+```
+
