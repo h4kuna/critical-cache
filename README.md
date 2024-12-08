@@ -139,13 +139,13 @@ $checkUniqueValue = new class implements \h4kuna\CriticalCache\Interfaces\Unique
         return  20;
     }
 
-	public function getRandomGenerator(): RandomGeneratorContract {
-	    return  $this->randomGenerator;
-	}
+    public function getRandomGenerator(): RandomGeneratorContract {
+        return  $this->randomGenerator;
+    }
 
-	public function getTries(): ?int {
-	    return null;
-	}
+    public function getTries(): ?int {
+        return null;
+    }
 };
 
 /** @var \h4kuna\CriticalCache\Services\UniqueHashQueueService $uniqueHash */
