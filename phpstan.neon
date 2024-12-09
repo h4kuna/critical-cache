@@ -3,7 +3,8 @@ parameters:
 	paths:
 		- src
 		- tests/src
-
+	excludePaths:
+		- tests/src/Integration/db-insert.php
 includes:
 	- vendor/phpstan/phpstan-strict-rules/rules.neon
 	- phpstan-baseline.neon
