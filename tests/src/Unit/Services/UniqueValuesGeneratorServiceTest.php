@@ -5,6 +5,7 @@ namespace h4kuna\CriticalCache\Tests\Unit\Services;
 use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
 use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
+use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 use h4kuna\CriticalCache\Services\UniqueValuesGeneratorService;
 use h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock;
 use h4kuna\CriticalCache\Tests\Mock\UniqueValueServiceMock;
@@ -46,68 +47,37 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 
 	private static function createFullyChecked(): UniqueValueServiceInterface
 	{
-		return new class implements UniqueValueServiceInterface {
+		return new class extends UniqueValueServiceAbstract {
 
-			public function __construct(
-				private RandomGeneratorContract $randomGenerator = new RandomGeneratorMock(),
-			) {
+			public function __construct() {
+				parent::__construct(new RandomGeneratorMock(), 3);
 			}
 
 			public function check(array $data): iterable
 			{
 				return array_values($data);
-			}
-
-			public function getQueueSize(): int
-			{
-				return 3;
-			}
-
-			public function getRandomGenerator(): RandomGeneratorContract
-			{
-				return $this->randomGenerator;
-			}
-
-			public function getTries(): ?int
-			{
-				return null;
 			}
 		};
 	}
 
 	private static function createBadGenerator(): UniqueValueServiceInterface
 	{
-		return new class implements UniqueValueServiceInterface {
-			private RandomGeneratorContract $randomGenerator;
-
+		return new class extends UniqueValueServiceAbstract {
 			public function __construct()
 			{
-				$this->randomGenerator = new class implements RandomGeneratorContract {
+				$randomGenerator = new class implements RandomGeneratorContract {
 					public function execute(): string
 					{
 						return 'A';
 					}
 				};
+
+				parent::__construct($randomGenerator, 3);
 			}
 
 			public function check(array $data): iterable
 			{
 				return array_values($data);
-			}
-
-			public function getQueueSize(): int
-			{
-				return 3;
-			}
-
-			public function getRandomGenerator(): RandomGeneratorContract
-			{
-				return $this->randomGenerator;
-			}
-
-			public function getTries(): ?int
-			{
-				return null;
 			}
 		};
 	}

@@ -4,8 +4,7 @@ namespace h4kuna\CriticalCache\Tests\Integration;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
-use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
+use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 use h4kuna\CriticalCache\Services\RandomGenerator;
 use h4kuna\CriticalCache\Services\UniqueValuesGeneratorService;
 use PDO;
@@ -39,12 +38,10 @@ function placeholder(array $data, string $str): string
 }
 
 
-$checker = new class($pdo) implements UniqueValueServiceInterface {
-	private RandomGeneratorContract $randomGenerator;
-
-	public function __construct(private PDO $pdo)
+$checker = new class($pdo) extends UniqueValueServiceAbstract {
+	public function __construct(private readonly PDO $pdo)
 	{
-		$this->randomGenerator = new RandomGenerator();
+		parent::__construct(new RandomGenerator(),200000);
 	}
 
 	public function check(array $data): iterable
@@ -55,21 +52,6 @@ $checker = new class($pdo) implements UniqueValueServiceInterface {
 		foreach ($stmt->fetchAll(PDO::FETCH_OBJ) as $row) {
 			yield $row->unique_value;
 		}
-	}
-
-	public function getQueueSize(): int
-	{
-		return 200000;
-	}
-
-	public function getRandomGenerator(): RandomGeneratorContract
-	{
-		return $this->randomGenerator;
-	}
-
-	public function getTries(): ?int
-	{
-		return null;
 	}
 };
 

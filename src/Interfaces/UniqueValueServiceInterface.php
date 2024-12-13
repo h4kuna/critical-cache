@@ -29,9 +29,9 @@ interface UniqueValueServiceInterface
 	public function getRandomGenerator(): RandomGeneratorContract;
 
 	/**
-	 * by default return null
+	 * by default return 3
 	 *
-	 * @return ?positive-int
+	 * @return int<1, 10>
 	 */
-	public function getTries(): ?int;
+	public function getTries(): int;
 }

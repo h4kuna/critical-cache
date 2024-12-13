@@ -3,17 +3,18 @@
 namespace h4kuna\CriticalCache\Tests\Mock;
 
 use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
-use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
+use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 
-final class UniqueValueServiceMock implements UniqueValueServiceInterface
+final class UniqueValueServiceMock extends UniqueValueServiceAbstract
 {
 	/**
 	 * @param list<string> $stored
 	 */
 	public function __construct(
 		private array $stored,
-		private RandomGeneratorContract $randomGenerator = new RandomGeneratorMock(),
+		RandomGeneratorContract $randomGenerator = new RandomGeneratorMock(),
 	) {
+		parent::__construct($randomGenerator, 4);
 	}
 
 	public function check(array $data): iterable
@@ -23,20 +24,4 @@ final class UniqueValueServiceMock implements UniqueValueServiceInterface
 
 		return $out;
 	}
-
-	public function getQueueSize(): int
-	{
-		return 4;
-	}
-
-	public function getRandomGenerator(): RandomGeneratorContract
-	{
-		return $this->randomGenerator;
-	}
-
-	public function getTries(): ?int
-	{
-		return null;
-	}
-
 }

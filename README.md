@@ -117,11 +117,12 @@ The service generate unique values, witch check mechanism with source for exampl
 For example, we use [RandomGeneratorMock](tests/src/Mock/RandomGeneratorMock.php), the class generate alphabet, A, B, C, D ... Z, AA...
 
 ```php
-$checkUniqueValue = new class implements \h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface  {
+// implement UniqueValueServiceInterface or extends UniqueValueServiceAbstract
+$checkUniqueValue = new class extends \h4kuna\CriticalCache\Services\UniqueValueServiceAbstract {
     
-    public function __construct(
-        private RandomGeneratorContract $randomGenerator = new \h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock(),
-    ) {
+    public function __construct() 
+    {
+        parent::__construct(new \h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock());
     }
     
     public function check(array $data): iterable {
@@ -134,18 +135,7 @@ $checkUniqueValue = new class implements \h4kuna\CriticalCache\Interfaces\Unique
         // or
         return ['B', 'C'];
     }
-    
-    public function getQueueSize(): int {
-        return  20;
-    }
-
-    public function getRandomGenerator(): RandomGeneratorContract {
-        return  $this->randomGenerator;
-    }
-
-    public function getTries(): ?int {
-        return null;
-    }
+   
 };
 
 /** @var \h4kuna\CriticalCache\Services\UniqueHashQueueService $uniqueHash */

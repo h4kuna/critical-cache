@@ -18,7 +18,7 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 
 	public function execute(UniqueValueServiceInterface $checkUniqueColumnQuery): array
 	{
-		$tries = $checkUniqueColumnQuery->getTries() ?? 3;
+		$tries = $checkUniqueColumnQuery->getTries();
 		$values = [];
 		for ($i = 0; $i < $tries; ++$i) {
 			$values = $this->newRandomBatch($checkUniqueColumnQuery);
