@@ -1,36 +1,55 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\NetteCache\\:\\:setMultiple\\(\\) has parameter \\$values with no value type specified in iterable type iterable\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\Contracts\\PauseAfterUseContract\:\:execute\(\) has parameter \$pauseService with generic interface h4kuna\\CriticalCache\\Interfaces\\PauseServiceInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Contracts/PauseAfterUseContract.php
+
+		-
+			message: '#^Method h4kuna\\CriticalCache\\Nette\\NetteCache\:\:setMultiple\(\) has parameter \$values with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Nette/NetteCache.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:clean\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\Nette\\Storage\\MemoryTtlStorage\:\:clean\(\) has parameter \$conditions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Nette/Storage/MemoryTtlStorage.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:validate\\(\\) has parameter \\$dependencies with no value type specified in iterable type array\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\Nette\\Storage\\MemoryTtlStorage\:\:validate\(\) has parameter \$dependencies with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Nette/Storage/MemoryTtlStorage.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:write\\(\\) has parameter \\$data with no type specified\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\Nette\\Storage\\MemoryTtlStorage\:\:write\(\) has parameter \$data with no type specified\.$#'
+			identifier: missingType.parameter
 			count: 1
 			path: src/Nette/Storage/MemoryTtlStorage.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\Nette\\\\Storage\\\\MemoryTtlStorage\\:\\:write\\(\\) has parameter \\$dependencies with no value type specified in iterable type array\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\Nette\\Storage\\MemoryTtlStorage\:\:write\(\) has parameter \$dependencies with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Nette/Storage/MemoryTtlStorage.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\PSR16\\\\Locking\\\\CacheLock\\:\\:setMultiple\\(\\) has parameter \\$values with no value type specified in iterable type iterable\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\PSR16\\Locking\\CacheLock\:\:setMultiple\(\) has parameter \$values with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/PSR16/Locking/CacheLock.php
 
 		-
-			message: "#^Method h4kuna\\\\CriticalCache\\\\PSR16\\\\Pool\\\\CachePool\\:\\:setMultiple\\(\\) has parameter \\$values with no value type specified in iterable type iterable\\.$#"
+			message: '#^Method h4kuna\\CriticalCache\\PSR16\\Pool\\CachePool\:\:setMultiple\(\) has parameter \$values with no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/PSR16/Pool/CachePool.php
+
+		-
+			message: '#^Method h4kuna\\CriticalCache\\Services\\PauseAfterUse\:\:execute\(\) has parameter \$pauseService with generic interface h4kuna\\CriticalCache\\Interfaces\\PauseServiceInterface but does not specify its types\: T$#'
+			identifier: missingType.generics
+			count: 1
+			path: src/Services/PauseAfterUse.php

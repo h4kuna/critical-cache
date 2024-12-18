@@ -3,7 +3,7 @@
 namespace h4kuna\CriticalCache\Lock\Malkusch;
 
 use h4kuna\CriticalCache\Lock;
-use malkusch\lock\mutex\Mutex;
+use Malkusch\Lock\Mutex\Mutex;
 
 final class CriticalSection implements Lock\Lock
 {

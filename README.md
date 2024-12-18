@@ -144,3 +144,19 @@ $value = $uniqueHash->execute($checkUniqueValue); // random unique value, D
 $value = $uniqueHash->execute($checkUniqueValue); // random unique value, E
 ```
 
+## [PauseAfterUse](src/Services/PauseAfterUse.php)
+
+The service generate value, and sleep few seconds before allow next to generate value.
+```php
+/** @var \h4kuna\CriticalCache\Services\PauseAfterUse $pauseAfterUse */
+/** @var \Psr\Clock\ClockInterface $clock */
+$pauseService = new class ($clock, 3) extends PauseService {
+    protected function run(): void
+    {
+        var_dump('hello');
+    }
+};
+
+$pauseAfterUse->execute($pauseService); // execute run()
+$pauseAfterUse->execute($pauseService); // sleep 3 seconds and execute run()
+```

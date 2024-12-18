@@ -12,6 +12,7 @@
   ],
   "require": {
     "php": ">=8.2",
+    "h4kuna/data-type": "^3.0.15",
     "h4kuna/memoize": "^0.1.7",
     "psr/clock": "^1.0",
     "psr/simple-cache": "^3.0"
@@ -19,7 +20,7 @@
   "require-dev": {
     "beste/clock": "^3.0",
     "h4kuna/dir": "^0.1.7",
-    "malkusch/lock": "^2.2",
+    "malkusch/lock": "^2.2 || ^3.0",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
     "phpstan/phpstan": "^2.0",

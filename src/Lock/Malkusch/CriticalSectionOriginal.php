@@ -6,7 +6,7 @@ use h4kuna\CriticalCache\Exceptions\OpenFileFailedException;
 use h4kuna\CriticalCache\Lock\Lock;
 use h4kuna\CriticalCache\Lock\LockOriginalAbstract;
 use h4kuna\Dir\Dir;
-use malkusch\lock\mutex\FlockMutex;
+use Malkusch\Lock\Mutex\FlockMutex;
 
 /**
  * This implementation support FlockMutex from package malkusch/lock
