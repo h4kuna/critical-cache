@@ -4,5 +4,6 @@ namespace h4kuna\CriticalCache\Contracts;
 
 interface RandomGeneratorContract
 {
+	/** @return non-empty-string */
 	public function execute(): string;
 }

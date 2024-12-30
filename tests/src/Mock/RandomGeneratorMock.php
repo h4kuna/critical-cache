@@ -10,6 +10,7 @@ final class RandomGeneratorMock implements RandomGeneratorContract
 
 	public function execute(): string
 	{
+		/** @var non-empty-string $char */
 		$char = $this->counter;
 		$this->counter++;
 

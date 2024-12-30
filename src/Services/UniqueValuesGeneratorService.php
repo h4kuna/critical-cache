@@ -56,13 +56,12 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 			$new[$hash] = $hash;
 		} while ($i < $size);
 
+		assert($new !== []);
+
 		foreach ($checkUniqueColumnQuery->check($new) as $matchedHash) {
 			unset($new[$matchedHash]);
 		}
 
-		/** @var list<non-empty-string> $out */
-		$out = array_values($new);
-
-		return $out;
+		return $checkUniqueColumnQuery->transform($new);
 	}
 }

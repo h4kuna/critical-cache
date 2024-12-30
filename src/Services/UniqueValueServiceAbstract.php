@@ -33,4 +33,8 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 		return $this->tries;
 	}
 
+	public function transform(array $data): array
+	{
+		return array_values($data);
+	}
 }

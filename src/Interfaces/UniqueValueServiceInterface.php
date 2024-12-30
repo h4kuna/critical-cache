@@ -13,7 +13,7 @@ interface UniqueValueServiceInterface
 	 * Generator generate list $data [A, B, C]
 	 * return [A]
 	 *
-	 * @param array<string> $data
+	 * @param non-empty-array<non-empty-string, non-empty-string> $data
 	 *
 	 * @return iterable<int, string> return non duplicity
 	 */
@@ -34,4 +34,12 @@ interface UniqueValueServiceInterface
 	 * @return int<1, 10>
 	 */
 	public function getTries(): int;
+
+	/**
+	 * use array_values by default, or if you need array_reverse
+	 *
+	 * @param array<non-empty-string, non-empty-string> $data
+	 * @return list<non-empty-string>
+	 */
+	public function transform(array $data): array;
 }
