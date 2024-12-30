@@ -24,7 +24,7 @@ final class CacheLock implements CacheLocking
 
 	public function synchronized(string $key, Closure $callback)
 	{
-		return $this->lockOriginal->get($key)->synchronized(fn () => $callback($this->cache));
+		return $this->lockOriginal->get("_lock.$key")->synchronized(fn () => $callback($this->cache));
 	}
 
 	/**
@@ -60,7 +60,7 @@ final class CacheLock implements CacheLocking
 
 	public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
 	{
-		return $this->synchronized("_lock.$key", static fn (CacheInterface $cache): bool => $cache->set($key, $value, $ttl));
+		return $this->synchronized($key, static fn (CacheInterface $cache): bool => $cache->set($key, $value, $ttl));
 	}
 
 	/**
