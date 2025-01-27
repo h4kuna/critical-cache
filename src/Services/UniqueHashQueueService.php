@@ -18,7 +18,7 @@ final readonly class UniqueHashQueueService implements UniqueDataStoreServiceCon
 
 	public function execute(UniqueValueServiceInterface $checkUniqueValue): string
 	{
-		$cacheKey = $checkUniqueValue::class;
+		$cacheKey = $checkUniqueValue::class . $checkUniqueValue->cacheSuffix();
 		return $this->cache->synchronized($cacheKey, function (CacheInterface $cache) use (
 			$checkUniqueValue,
 			$cacheKey,

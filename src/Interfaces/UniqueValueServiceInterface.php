@@ -42,4 +42,6 @@ interface UniqueValueServiceInterface
 	 * @return list<non-empty-string>
 	 */
 	public function transform(array $data): array;
+
+	public function cacheSuffix(): string;
 }

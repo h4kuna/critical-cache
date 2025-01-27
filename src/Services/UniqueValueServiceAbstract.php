@@ -37,4 +37,9 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 	{
 		return array_values($data);
 	}
+
+	public function cacheSuffix(): string
+	{
+		return '';
+	}
 }
