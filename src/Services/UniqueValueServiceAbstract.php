@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Services;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 
 abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
@@ -12,7 +12,7 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 	 * @param int<1, 10> $tries
 	 */
 	public function __construct(
-		private readonly RandomGeneratorContract $randomGenerator,
+		private readonly RandomGeneratorInterface $randomGenerator,
 		private readonly int $queueSize = 50,
 		private readonly int $tries = 3,
 	) {
@@ -23,7 +23,7 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 		return $this->queueSize;
 	}
 
-	public function getRandomGenerator(): RandomGeneratorContract
+	public function getRandomGenerator(): RandomGeneratorInterface
 	{
 		return $this->randomGenerator;
 	}

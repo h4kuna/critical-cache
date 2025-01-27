@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Interfaces;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 
 interface UniqueValueServiceInterface
 {
@@ -26,7 +26,7 @@ interface UniqueValueServiceInterface
 	 */
 	public function getQueueSize(): int;
 
-	public function getRandomGenerator(): RandomGeneratorContract;
+	public function getRandomGenerator(): RandomGeneratorInterface;
 
 	/**
 	 * by default return 3

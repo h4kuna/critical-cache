@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace h4kuna\CriticalCache\Contracts;
+namespace h4kuna\CriticalCache\Interfaces;
 
-interface RandomGeneratorContract
+interface RandomGeneratorInterface
 {
 	/** @return non-empty-string */
 	public function execute(): string;

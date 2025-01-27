@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Services;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 
 /**
  * uuid v4 implementation
@@ -11,7 +11,7 @@ use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
  * implement own generator
  * @see https://github.com/ramsey/uuid
  */
-final class RandomGenerator implements RandomGeneratorContract
+final class RandomGenerator implements RandomGeneratorInterface
 {
 	public function execute(): string
 	{

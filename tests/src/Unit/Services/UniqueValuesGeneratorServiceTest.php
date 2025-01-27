@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
@@ -65,7 +65,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 		return new class extends UniqueValueServiceAbstract {
 			public function __construct()
 			{
-				$randomGenerator = new class implements RandomGeneratorContract {
+				$randomGenerator = new class implements RandomGeneratorInterface {
 					public function execute(): string
 					{
 						return 'A';

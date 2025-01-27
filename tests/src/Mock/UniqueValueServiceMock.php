@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Tests\Mock;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 
 final class UniqueValueServiceMock extends UniqueValueServiceAbstract
@@ -12,7 +12,7 @@ final class UniqueValueServiceMock extends UniqueValueServiceAbstract
 	 */
 	public function __construct(
 		private array $stored,
-		RandomGeneratorContract $randomGenerator = new RandomGeneratorMock(),
+		RandomGeneratorInterface $randomGenerator = new RandomGeneratorMock(),
 	) {
 		parent::__construct($randomGenerator, 4);
 	}

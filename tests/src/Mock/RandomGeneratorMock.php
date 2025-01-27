@@ -2,9 +2,9 @@
 
 namespace h4kuna\CriticalCache\Tests\Mock;
 
-use h4kuna\CriticalCache\Contracts\RandomGeneratorContract;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 
-final class RandomGeneratorMock implements RandomGeneratorContract
+final class RandomGeneratorMock implements RandomGeneratorInterface
 {
 	private string $counter = 'A';
 
