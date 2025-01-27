@@ -42,4 +42,9 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 	{
 		return '';
 	}
+
+	public function ttl(): int
+	{
+		return 2592000; // 60 * 60 * 24 * 30
+	}
 }

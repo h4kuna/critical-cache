@@ -30,7 +30,7 @@ final readonly class UniqueHashQueueService implements UniqueDataStoreServiceCon
 			}
 
 			$value = array_pop($values);
-			$cache->set($cacheKey, $values);
+			$cache->set($cacheKey, $values, $checkUniqueValue->ttl());
 
 			return $value;
 		});

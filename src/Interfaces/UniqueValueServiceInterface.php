@@ -2,8 +2,6 @@
 
 namespace h4kuna\CriticalCache\Interfaces;
 
-use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
-
 interface UniqueValueServiceInterface
 {
 	/**
@@ -44,4 +42,9 @@ interface UniqueValueServiceInterface
 	public function transform(array $data): array;
 
 	public function cacheSuffix(): string;
+
+	/**
+	 * seconds
+	 */
+	public function ttl(): int;
 }
