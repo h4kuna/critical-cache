@@ -5,5 +5,5 @@ namespace h4kuna\CriticalCache\Interfaces;
 interface RandomGeneratorInterface
 {
 	/** @return non-empty-string */
-	public function execute(): string;
+	public function execute(?object $dataSet = null): string;
 }

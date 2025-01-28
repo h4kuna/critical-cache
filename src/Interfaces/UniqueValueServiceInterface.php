@@ -41,8 +41,6 @@ interface UniqueValueServiceInterface
 	 */
 	public function transform(array $data): array;
 
-	public function cacheSuffix(): string;
-
 	/**
 	 * seconds
 	 */

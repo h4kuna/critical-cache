@@ -8,7 +8,7 @@ final class RandomGeneratorMock implements RandomGeneratorInterface
 {
 	private string $counter = 'A';
 
-	public function execute(): string
+	public function execute(?object $dataSet = null): string
 	{
 		/** @var non-empty-string $char */
 		$char = $this->counter;

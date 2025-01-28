@@ -13,7 +13,7 @@ use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
  */
 final class RandomGenerator implements RandomGeneratorInterface
 {
-	public function execute(): string
+	public function execute(?object $dataSet = null): string
 	{
 		$data = random_bytes(16);
 
