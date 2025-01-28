@@ -16,12 +16,12 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 	) {
 	}
 
-	public function execute(UniqueValueServiceInterface $checkUniqueColumnQuery): array
+	public function execute(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet = null): array
 	{
 		$tries = $checkUniqueColumnQuery->getTries();
 		$values = [];
 		for ($i = 0; $i < $tries; ++$i) {
-			$values = $this->newRandomBatch($checkUniqueColumnQuery);
+			$values = $this->newRandomBatch($checkUniqueColumnQuery, $dataSet);
 			if ($values !== []) {
 				break;
 			}
@@ -36,7 +36,7 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 	/**
 	 * @return list<non-empty-string>
 	 */
-	private function newRandomBatch(UniqueValueServiceInterface $checkUniqueColumnQuery): array
+	private function newRandomBatch(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet): array
 	{
 		$size = $checkUniqueColumnQuery->getQueueSize();
 		$randomizer = $checkUniqueColumnQuery->getRandomGenerator();
@@ -44,7 +44,7 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 		$i = 0;
 		$stopUnique = 0;
 		do {
-			$hash = $randomizer->execute();
+			$hash = $randomizer->execute($dataSet);
 			if (isset($new[$hash])) {
 				++$stopUnique;
 				if ($stopUnique >= $this->maxUniqueFailed) {

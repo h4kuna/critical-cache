@@ -38,11 +38,6 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 		return array_values($data);
 	}
 
-	public function cacheSuffix(): string
-	{
-		return '';
-	}
-
 	public function ttl(): int
 	{
 		return 2592000; // 60 * 60 * 24 * 30

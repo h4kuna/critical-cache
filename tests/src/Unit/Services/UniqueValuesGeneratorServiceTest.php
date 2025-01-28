@@ -66,7 +66,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 			public function __construct()
 			{
 				$randomGenerator = new class implements RandomGeneratorInterface {
-					public function execute(): string
+					public function execute(?object $dataSet = null): string
 					{
 						return 'A';
 					}

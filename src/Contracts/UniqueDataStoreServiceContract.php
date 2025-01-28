@@ -4,11 +4,24 @@ namespace h4kuna\CriticalCache\Contracts;
 
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 
+/**
+ * @template T of object=object
+ * @phpstan-type TObject T
+ */
 interface UniqueDataStoreServiceContract
 {
-	public function execute(UniqueValueServiceInterface $checkUniqueValue): string;
+	/**
+	 * @param T|null $dataSet
+	 */
+	public function execute(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): string;
 
-	public function count(UniqueValueServiceInterface $checkUniqueValue): int;
+	/**
+	 * @param T|null $dataSet
+	 */
+	public function count(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): int;
 
-	public function saveNewBatch(UniqueValueServiceInterface $checkUniqueValue): void;
+	/**
+	 * @param T|null $dataSet
+	 */
+	public function saveNewBatch(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): void;
 }
