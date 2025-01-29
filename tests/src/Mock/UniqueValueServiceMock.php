@@ -17,7 +17,7 @@ final class UniqueValueServiceMock extends UniqueValueServiceAbstract
 		parent::__construct($randomGenerator, 4);
 	}
 
-	public function check(array $data): iterable
+	public function check(array $data, ?object $dataSet = null): iterable
 	{
 		$out = array_intersect($this->stored, $data);
 		array_push($this->stored, ...array_values(array_diff($data, $out)));

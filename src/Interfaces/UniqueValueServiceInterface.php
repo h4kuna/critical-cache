@@ -2,6 +2,11 @@
 
 namespace h4kuna\CriticalCache\Interfaces;
 
+use h4kuna\CriticalCache\Contracts\UniqueDataStoreServiceContract;
+
+/**
+ * @phpstan-import-type TObject from UniqueDataStoreServiceContract
+ */
 interface UniqueValueServiceInterface
 {
 	/**
@@ -12,10 +17,11 @@ interface UniqueValueServiceInterface
 	 * return [A]
 	 *
 	 * @param non-empty-array<non-empty-string, non-empty-string> $data
+	 * @param TObject|null $dataSet
 	 *
 	 * @return iterable<int, string> return non duplicity
 	 */
-	public function check(array $data): iterable;
+	public function check(array $data, ?object $dataSet = null): iterable;
 
 	/**
 	 * for began choose between 20 and 100

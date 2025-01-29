@@ -53,7 +53,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 				parent::__construct(new RandomGeneratorMock(), 3);
 			}
 
-			public function check(array $data): iterable
+			public function check(array $data, ?object $dataSet = null): iterable
 			{
 				return array_values($data);
 			}
@@ -75,7 +75,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 				parent::__construct($randomGenerator, 3);
 			}
 
-			public function check(array $data): iterable
+			public function check(array $data, ?object $dataSet = null): iterable
 			{
 				return array_values($data);
 			}

@@ -58,7 +58,7 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 
 		assert($new !== []);
 
-		foreach ($checkUniqueColumnQuery->check($new) as $matchedHash) {
+		foreach ($checkUniqueColumnQuery->check($new, $dataSet) as $matchedHash) {
 			unset($new[$matchedHash]);
 		}
 
