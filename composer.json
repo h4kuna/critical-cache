@@ -20,7 +20,7 @@
   "require-dev": {
     "beste/clock": "^3.0",
     "h4kuna/dir": "^0.1.7",
-    "malkusch/lock": "^2.2 || ^3.0",
+    "malkusch/lock": "^3.0",
     "nette/caching": "^3.2",
     "nette/tester": "^2.4",
     "phpstan/phpstan": "^2.0",
