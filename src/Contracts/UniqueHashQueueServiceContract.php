@@ -8,10 +8,12 @@ use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
  * @template T of object=object
  * @phpstan-type TObject T
  */
-interface UniqueDataStoreServiceContract
+interface UniqueHashQueueServiceContract
 {
 	/**
 	 * @param T|null $dataSet
+	 *
+	 * @return non-empty-string
 	 */
 	public function execute(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): string;
 

@@ -2,10 +2,10 @@
 
 namespace h4kuna\CriticalCache\Interfaces;
 
-use h4kuna\CriticalCache\Contracts\UniqueDataStoreServiceContract;
+use h4kuna\CriticalCache\Contracts\UniqueHashQueueServiceContract;
 
 /**
- * @phpstan-import-type TObject from UniqueDataStoreServiceContract
+ * @phpstan-import-type TObject from UniqueHashQueueServiceContract
  */
 interface RandomGeneratorInterface
 {

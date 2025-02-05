@@ -2,13 +2,13 @@
 
 namespace h4kuna\CriticalCache\Services;
 
-use h4kuna\CriticalCache\Contracts\UniqueDataStoreServiceContract;
+use h4kuna\CriticalCache\Contracts\UniqueHashQueueServiceContract;
 use h4kuna\CriticalCache\Contracts\UniqueValuesGeneratorServiceContract;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use Psr\SimpleCache\CacheInterface;
 
-final readonly class UniqueHashQueueService implements UniqueDataStoreServiceContract
+final readonly class UniqueHashQueueService implements UniqueHashQueueServiceContract
 {
 	public function __construct(
 		private CacheLocking $cache,
