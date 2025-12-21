@@ -24,7 +24,7 @@ interface UniqueValueServiceInterface
 	public function check(array $data, ?object $dataSet = null): iterable;
 
 	/**
-	 * for began choose between 20 and 100
+	 * for began choose between 10 and 100
 	 *
 	 * @return positive-int
 	 */

@@ -72,7 +72,6 @@ final readonly class ValidService implements ValidServiceContract
 		string $value = '',
 	): void {
 		$dateTo = Expire::toDate($validTo, $this->clock);
-		assert($dateTo instanceof DateTimeInterface);
 
 		$this->cache->set($key, $this->encode($validFrom, $dateTo, $value), $this->clock->now()->diff($dateTo));
 	}

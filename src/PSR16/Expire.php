@@ -12,11 +12,17 @@ use Psr\Clock\ClockInterface;
  */
 final class Expire
 {
+	/**
+	 * @return ($ttl is null ? null : int)
+	 */
 	public static function at(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
 	{
 		return self::toDate($ttl, $clock)?->getTimestamp();
 	}
 
+	/**
+	 * @return ($ttl is null ? null : DateTimeInterface)
+	 */
 	public static function toDate(
 		int|null|DateInterval|DateTimeInterface $ttl,
 		?ClockInterface $clock = null,
@@ -37,6 +43,9 @@ final class Expire
 		return $clock === null ? new DateTimeImmutable() : $clock->now();
 	}
 
+	/**
+	 * @return ($ttl is null ? null : int)
+	 */
 	public static function after(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
 	{
 		if ($ttl === null || is_int($ttl)) {

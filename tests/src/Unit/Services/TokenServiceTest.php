@@ -2,11 +2,10 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
-use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\Services\RandomGenerator;
 use h4kuna\CriticalCache\Services\TokenService;
 use h4kuna\CriticalCache\Services\UseOneTimeService;
-use Nette\Bridges\Psr\PsrCacheAdapter;
+use h4kuna\CriticalCache\Tests\Mock\ValidServiceFactory;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -16,7 +15,7 @@ final class TokenServiceTest extends TestCase
 {
 	public function testBasic(): void
 	{
-		$tokenService = new TokenService(new UseOneTimeService(new PsrCacheAdapter(new MemoryTtlStorage())), new RandomGenerator());
+		$tokenService = new TokenService(new UseOneTimeService(ValidServiceFactory::create()), new RandomGenerator());
 		Assert::null($tokenService->get('foo'));
 		$token = $tokenService->make();
 		Assert::true($tokenService->compare($token));

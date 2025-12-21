@@ -4,7 +4,7 @@ namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
 use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\Services\ValidService;
-use h4kuna\CriticalCache\Tests\ClockTest;
+use h4kuna\CriticalCache\Tests\Mock\ClockFrozen;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Tester\Assert;
 use Tester\TestCase;
@@ -15,7 +15,7 @@ final class ValidServiceTest extends TestCase
 {
 	public function testBasic(): void
 	{
-		$service = new ValidService(new PsrCacheAdapter(new MemoryTtlStorage()), new ClockTest(0));
+		$service = new ValidService(new PsrCacheAdapter(new MemoryTtlStorage()), new ClockFrozen(0));
 
 		Assert::null($service->from('foo'));
 		Assert::null($service->to('foo'));
