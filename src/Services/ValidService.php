@@ -71,22 +71,44 @@ final readonly class ValidService implements ValidServiceContract
 		int|DateInterval|DateTimeInterface|null $validFrom = null,
 		string $value = '',
 	): void {
-		$dateTo = Expire::toDate($validTo, $this->clock);
-		assert($dateTo instanceof DateTimeInterface);
 
-		$this->cache->set($key, $this->encode($validFrom, $dateTo, $value), $this->clock->now()->diff($dateTo));
+		$validFromDate = Expire::toDate($validFrom, $this->clock);
+		$validToDate = Expire::toDate($validTo, $this->clock);
+
+		$now = $this->clock->now();
+		if ($validFromDate !== null) {
+			$diffFrom = $validFromDate->getTimestamp() - $now->getTimestamp();
+			if ($diffFrom > 0) {
+				$validToDate = $now->setTimestamp($validToDate->getTimestamp() + $diffFrom);
+			}
+		}
+
+		$this->cache->set($key, $this->encode($validFromDate, $validToDate, $value), $now->diff($validToDate));
 	}
 
 	/**
 	 * @return TypeSave
 	 */
-	private function encode(int|DateInterval|DateTimeInterface|null $from, DateTimeInterface $to, string $value): array
+	private function encode(?DateTimeInterface $from, DateTimeInterface $to, string $value): array
 	{
-		return DateRangeStore::encode(Expire::toDate($from, $this->clock), $to, $value);
+		return DateRangeStore::encode($from, $to, $value);
 	}
 
 	private function isValidCondition(?DateTimeImmutable $from, ?DateTimeImmutable $to): bool
 	{
-		return $to !== null && ($from === null || $from <= $this->clock->now());
+		if ($from === null && $to === null) {
+			return false;
+		}
+
+		$now = $this->clock->now();
+		if ($from !== null && $to !== null) {
+			return $from < $now && $now <= $to;
+		}
+
+		if ($from === null) {
+			return $now <= $to;
+		}
+
+		return $from < $now;
 	}
 }

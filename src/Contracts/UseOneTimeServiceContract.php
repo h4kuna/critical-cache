@@ -3,10 +3,11 @@
 namespace h4kuna\CriticalCache\Contracts;
 
 use DateInterval;
+use DateTimeImmutable;
 
 interface UseOneTimeServiceContract
 {
-	public function save(string $key, string $value, null|int|DateInterval $ttl = 900): string;
+	public function save(string $key, string $value, int|DateInterval $ttl = 900, ?DateTimeImmutable $validFrom = null): string;
 
 	public function get(string $key): ?string;
 }

@@ -15,7 +15,7 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 		private readonly RandomGeneratorInterface $randomGenerator,
 		private readonly int $queueSize = 50,
 		private readonly int $tries = 3,
-		private readonly int $ttl = 2592000, // 60 * 60 * 24 * 30
+		private readonly int $ttl = 2_592_000, // 60 * 60 * 24 * 30
 	) {
 	}
 

@@ -2,7 +2,7 @@
 
 namespace h4kuna\CriticalCache\Lock\Malkusch;
 
-use h4kuna\CriticalCache\Exceptions\OpenFileFailedException;
+use h4kuna\CriticalCache\Exceptions\LogicException;
 use h4kuna\CriticalCache\Lock\Lock;
 use h4kuna\CriticalCache\Lock\LockOriginalAbstract;
 use h4kuna\Dir\Dir;
@@ -21,7 +21,7 @@ final class CriticalSectionOriginal extends LockOriginalAbstract
 	{
 		$filename = $this->tempDir->filename(md5($name), 'lock');
 		if (touch($filename) === false || ($resource = fopen($filename, 'r')) === false) {
-			throw new OpenFileFailedException($filename);
+			throw new LogicException("Could not open file '$filename'.");
 		}
 
 		return new CriticalSection(new FlockMutex($resource));

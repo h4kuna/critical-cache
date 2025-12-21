@@ -2,9 +2,7 @@
 
 namespace h4kuna\CriticalCache\Exceptions;
 
-use RuntimeException;
-
-final class BrokenCacheException extends RuntimeException
+final class LogicException extends \LogicException
 {
 
 }

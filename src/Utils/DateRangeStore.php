@@ -4,9 +4,10 @@ namespace h4kuna\CriticalCache\Utils;
 
 use DateTimeImmutable;
 use DateTimeInterface;
+use h4kuna\CriticalCache\Exceptions\LogicException;
 
 /**
- * @phpstan-type TypeRange array{from: ?DateTimeImmutable, to: ?DateTimeImmutable, v: string}
+ * @phpstan-type TypeRange array{from: ?DateTimeImmutable, to: ?DateTimeImmutable, v: ?string}
  * @phpstan-type TypeSave array{from?: string, to?: string, v?: string}
  */
 final class DateRangeStore
@@ -17,10 +18,11 @@ final class DateRangeStore
 	 */
 	public static function decode(array $data): array
 	{
-		$data['from'] = self::toDate($data['from'] ?? '');
-		$data['to'] = self::toDate($data['to'] ?? '');
-		if (isset($data['v']) === false) {
-			$data['v'] = '';
+		$data['from'] = array_key_exists('from', $data) ? self::toDate($data['from']) : null;
+		$data['to'] = array_key_exists('to', $data) ? self::toDate($data['to']) : null;
+
+		if (array_key_exists('v', $data) === false) {
+			$data['v'] = null;
 		}
 
 		return $data;
@@ -42,9 +44,7 @@ final class DateRangeStore
 			$out['from'] = self::toString($from);
 		}
 
-		if ($value !== '') {
-			$out['v'] = $value;
-		}
+		$out['v'] = $value;
 
 		return $out;
 	}
@@ -61,6 +61,10 @@ final class DateRangeStore
 		}
 		$date = DateTimeImmutable::createFromFormat(DateTimeInterface::RFC3339_EXTENDED, $dateTime);
 
-		return $date === false ? null : $date;
+		if ($date === false) {
+			throw new LogicException('Broken date format in cache.');
+		}
+
+		return $date;
 	}
 }

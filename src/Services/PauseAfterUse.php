@@ -3,7 +3,7 @@
 namespace h4kuna\CriticalCache\Services;
 
 use h4kuna\CriticalCache\Contracts\PauseAfterUseContract;
-use h4kuna\CriticalCache\Exceptions\NullIsNotAllowedException;
+use h4kuna\CriticalCache\Exceptions\LogicException;
 use h4kuna\CriticalCache\Interfaces\PauseServiceInterface;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use Psr\SimpleCache\CacheInterface;
@@ -28,7 +28,7 @@ final readonly class PauseAfterUse implements PauseAfterUseContract
 
 				$value = $pauseService->execute();
 				if ($value === null) {
-					throw new NullIsNotAllowedException();
+					throw new LogicException('Null is not allowed.');
 				}
 				$cache->set($key, $value, $pauseService->getCacheTtl());
 

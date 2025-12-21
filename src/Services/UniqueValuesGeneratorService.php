@@ -16,6 +16,9 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 	) {
 	}
 
+	/**
+	 * @throws GenerateUniqueDataFailedException
+	 */
 	public function execute(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet = null): array
 	{
 		$tries = $checkUniqueColumnQuery->getTries();
@@ -35,6 +38,7 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 
 	/**
 	 * @return list<non-empty-string>
+	 * @throws GenerateUniqueDataFailedException
 	 */
 	private function newRandomBatch(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet): array
 	{

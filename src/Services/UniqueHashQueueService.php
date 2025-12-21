@@ -61,6 +61,6 @@ final readonly class UniqueHashQueueService implements UniqueHashQueueServiceCon
 			return $checkUniqueValue::class;
 		}
 
-		return $checkUniqueValue::class . implode("\x00", get_object_vars($dataSet));
+		return $checkUniqueValue::class . serialize(get_object_vars($dataSet));
 	}
 }

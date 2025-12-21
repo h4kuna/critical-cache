@@ -6,7 +6,7 @@ use Closure;
 use DateInterval;
 use DateTimeImmutable;
 use h4kuna\CriticalCache\PSR16\Expire;
-use h4kuna\CriticalCache\Tests\ClockTest;
+use h4kuna\CriticalCache\Tests\Mock\ClockFrozen;
 use Tester\Assert;
 use Tester\TestCase;
 
@@ -42,7 +42,7 @@ final class ExpireTest extends TestCase
 			],
 			[
 				static function (self $self) {
-					$self->assert(5, (new DateTimeImmutable())->setTimestamp(ClockTest::Time)->modify('+5 seconds'));
+					$self->assert(5, (new DateTimeImmutable())->setTimestamp(ClockFrozen::Time)->modify('+5 seconds'));
 				},
 			],
 		];
@@ -50,9 +50,9 @@ final class ExpireTest extends TestCase
 
 	public function assert(?int $expected, int|null|DateInterval|DateTimeImmutable $ttl): void
 	{
-		$factory = new ClockTest();
+		$factory = new ClockFrozen();
 		Assert::same($expected, Expire::after($ttl, $factory));
-		$expectedAt = $expected === null ? $expected : $expected + ClockTest::Time;
+		$expectedAt = $expected === null ? $expected : $expected + ClockFrozen::Time;
 		Assert::same($expectedAt, Expire::at($ttl, $factory));
 	}
 

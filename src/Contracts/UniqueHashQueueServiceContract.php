@@ -2,6 +2,7 @@
 
 namespace h4kuna\CriticalCache\Contracts;
 
+use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 
 /**
@@ -14,6 +15,7 @@ interface UniqueHashQueueServiceContract
 	 * @param T|null $dataSet
 	 *
 	 * @return non-empty-string
+	 * @throws GenerateUniqueDataFailedException
 	 */
 	public function execute(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): string;
 
@@ -24,6 +26,7 @@ interface UniqueHashQueueServiceContract
 
 	/**
 	 * @param T|null $dataSet
+	 * @throws GenerateUniqueDataFailedException
 	 */
 	public function saveNewBatch(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): void;
 }

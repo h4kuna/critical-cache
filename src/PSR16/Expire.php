@@ -7,16 +7,20 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Clock\ClockInterface;
 
-/**
- * @phpstan-type TypeKey string|int|float|list<string|int|float>
- */
+
 final class Expire
 {
+	/**
+	 * @return ($ttl is null ? null : int)
+	 */
 	public static function at(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
 	{
 		return self::toDate($ttl, $clock)?->getTimestamp();
 	}
 
+	/**
+	 * @return ($ttl is null ? null : DateTimeInterface)
+	 */
 	public static function toDate(
 		int|null|DateInterval|DateTimeInterface $ttl,
 		?ClockInterface $clock = null,
@@ -37,6 +41,9 @@ final class Expire
 		return $clock === null ? new DateTimeImmutable() : $clock->now();
 	}
 
+	/**
+	 * @return ($ttl is null ? null : int)
+	 */
 	public static function after(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
 	{
 		if ($ttl === null || is_int($ttl)) {
@@ -53,12 +60,9 @@ final class Expire
 		return $timestamp - $now->getTimestamp();
 	}
 
-	/**
-	 * @param TypeKey $key
-	 */
-	public static function key(string|int|float|array $key): string
+	public function midnight(?ClockInterface $clock = null): int
 	{
-		return implode("\x00", (array) $key);
+		return self::after(new DateTimeImmutable('tomorrow'), $clock);
 	}
 
 }
