@@ -19,7 +19,7 @@ final class PauseAfterUseTest extends TestCase
 {
 	public function testExecute(): void
 	{
-		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage()), new LockOriginalMock());
+		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
 		$service = new PauseAfterUse($cacheLock);
 		$pauseService = new class (SystemClock::create(), 3) extends PauseService {
 			protected function run(): void

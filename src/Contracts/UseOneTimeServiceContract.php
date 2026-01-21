@@ -4,10 +4,14 @@ namespace h4kuna\CriticalCache\Contracts;
 
 use DateInterval;
 use DateTimeImmutable;
+use h4kuna\CriticalCache\Interfaces\CompareStoredValueInterface;
 
-interface UseOneTimeServiceContract
+interface UseOneTimeServiceContract extends CompareStoredValueInterface
 {
-	public function save(string $key, string $value, int|DateInterval $ttl = 900, ?DateTimeImmutable $validFrom = null): string;
-
-	public function get(string $key): ?string;
+	public function set(
+		string $key,
+		string $value = self::CacheValue,
+		int|DateInterval $ttl = 900,
+		?DateTimeImmutable $validFrom = null,
+	): string;
 }

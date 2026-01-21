@@ -2,6 +2,7 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16;
 
+use Beste\Clock\FrozenClock;
 use Closure;
 use DateInterval;
 use DateTimeImmutable;
@@ -52,7 +53,7 @@ final class ExpireTest extends TestCase
 	{
 		$factory = new ClockFrozen();
 		Assert::same($expected, Expire::after($ttl, $factory));
-		$expectedAt = $expected === null ? $expected : $expected + ClockFrozen::Time;
+		$expectedAt = $expected === null ? null : $expected + ClockFrozen::Time;
 		Assert::same($expectedAt, Expire::at($ttl, $factory));
 	}
 
@@ -66,6 +67,17 @@ final class ExpireTest extends TestCase
 		$assert($this);
 	}
 
+	public function testMidnight(): void
+	{
+		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-11 10:09:08')));
+		Assert::same(49852, $ttl);
+
+		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-11 23:59:59')));
+		Assert::same(1, $ttl);
+
+		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-12 00:00:00')));
+		Assert::same(86400, $ttl);
+	}
 }
 
 (new ExpireTest())->run();

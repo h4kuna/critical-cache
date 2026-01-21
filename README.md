@@ -70,7 +70,7 @@ The service is usable for token and use one time.
 ```php
 /** @var \h4kuna\CriticalCache\Services\UseOneTimeService $useOneTimeService */
 $timeToLive = 900; // seconds
-$useOneTimeService->save('foo', 'token', $timeToLive);
+$useOneTimeService->set('foo', 'token', $timeToLive);
 // after 900 seconds or one call $useOneTimeService::get() is removed from cache 
 
 $useOneTimeService->get('foo'); // token
@@ -82,7 +82,7 @@ $useOneTimeService->get('foo'); // null
 The service tell you if anything is valid, you can choose date range for valid window.
 
 ```php
-/** @var \h4kuna\CriticalCache\Services\ValidService $validToService */
+/** @var \h4kuna\CriticalCache\Caching\ValidityAwareCache $validToService */
 $validToService->set('foo', new DateTime('tomorrow midnight')); // from is null it is mean now
 $validToService->isValid('foo'); // true from 'now' to 'tomorrow midnight'
 $validToService->value('foo'); // return empty string if is valid and null if is invalid
@@ -101,13 +101,13 @@ The service generate token and keep it for defined time.
 /** @var \h4kuna\CriticalCache\Services\TokenService $tokenService */
 $token = $tokenService->make(); // return string token by default uuid v4
 
-dump($tokenService->compare($token)); // true / false
+dump($tokenService->isEqual($token)); // true / false
 
 // if you want compare your self let use get()
 $token = $tokenService->make(value: 'lorem');
 $value = $tokenService->get($token); // lorem
 
-$tokenService->compare(value: $value); // false because you use get()
+$tokenService->isEqual(value: $value); // false because you use get()
 ```
 
 ## [UniqueHashQueueService](src/Services/UniqueHashQueueService.php)

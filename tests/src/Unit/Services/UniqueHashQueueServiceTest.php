@@ -2,6 +2,7 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
+use Beste\Clock\SystemClock;
 use Closure;
 use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\PSR16\Locking\CacheLock;
@@ -54,7 +55,7 @@ final class UniqueHashQueueServiceTest extends TestCase
 	public function assertExecute(
 		?DataSetEntity $dataSet,
 	): void {
-		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage()), new LockOriginalMock());
+		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
 		$service = new UniqueHashQueueService($cacheLock, new UniqueValuesGeneratorService());
 
 		$uniqueGenerator = new UniqueValueServiceMock([

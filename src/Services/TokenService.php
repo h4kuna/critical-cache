@@ -5,6 +5,7 @@ namespace h4kuna\CriticalCache\Services;
 use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Contracts\TokenServiceContract;
 use h4kuna\CriticalCache\Contracts\UseOneTimeServiceContract;
+use DateTimeImmutable;
 
 final readonly class TokenService implements TokenServiceContract
 {
@@ -14,10 +15,10 @@ final readonly class TokenService implements TokenServiceContract
 	) {
 	}
 
-	public function make(int $ttl = 900, string $value = self::CacheValue): string
+	public function make(int $ttl = 900, string $value = self::CacheValue, ?DateTimeImmutable $validFrom = null): string
 	{
 		$token = $this->tokenGenerator->execute();
-		$this->useOneTimeService->save($token, $value, $ttl);
+		$this->useOneTimeService->set($token, $value, $ttl, $validFrom);
 
 		return $token;
 	}
@@ -27,8 +28,8 @@ final readonly class TokenService implements TokenServiceContract
 		return $this->useOneTimeService->get($token);
 	}
 
-	public function compare(string $token, string $value = self::CacheValue): bool
+	public function isEqual(string $token, string $value = self::CacheValue): bool
 	{
-		return $this->get($token) === $value;
+		return $this->useOneTimeService->isEqual($token, $value);
 	}
 }

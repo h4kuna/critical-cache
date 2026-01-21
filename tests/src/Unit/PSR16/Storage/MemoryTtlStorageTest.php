@@ -2,6 +2,7 @@
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Storage;
 
+use Beste\Clock\SystemClock;
 use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use Nette\Caching\Cache;
 use Tester\Assert;
@@ -14,7 +15,7 @@ final class MemoryTtlStorageTest extends TestCase
 
 	public function testBasic(): void
 	{
-		$storage = new MemoryTtlStorage();
+		$storage = new MemoryTtlStorage(SystemClock::create());
 		Assert::null($storage->read('a'));
 		$storage->write('a', 'foo', [Cache::Expire => 1]);
 		Assert::same('foo', $storage->read('a'));

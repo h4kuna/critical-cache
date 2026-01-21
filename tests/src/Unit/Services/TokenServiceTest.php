@@ -18,7 +18,7 @@ final class TokenServiceTest extends TestCase
 		$tokenService = new TokenService(new UseOneTimeService(ValidServiceFactory::create()), new RandomGenerator());
 		Assert::null($tokenService->get('foo'));
 		$token = $tokenService->make();
-		Assert::true($tokenService->compare($token));
+		Assert::true($tokenService->isEqual($token));
 	}
 }
 

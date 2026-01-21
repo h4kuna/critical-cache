@@ -16,12 +16,12 @@ final class UseOneTimeServiceTest extends TestCase
 		$service = new UseOneTimeService(ValidServiceFactory::create());
 
 		Assert::null($service->get('foo'));
-		Assert::same('Lorem', $service->save('foo', 'Lorem', 2));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 2));
 		Assert::same('Lorem', $service->get('foo'));
 		Assert::null($service->get('foo'));
 		Assert::null($service->get('bar'));
 
-		Assert::same('Lorem', $service->save('foo', 'Lorem', 2));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 2));
 		sleep(2);
 		Assert::null($service->get('foo'));
 	}
@@ -31,14 +31,14 @@ final class UseOneTimeServiceTest extends TestCase
 		$service = new UseOneTimeService(ValidServiceFactory::create());
 
 		Assert::null($service->get('foo'));
-		Assert::same('Lorem', $service->save('foo', 'Lorem', 4, new \DateTimeImmutable('+2 seconds')));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 4, new \DateTimeImmutable('+2 seconds')));
 		Assert::null($service->get('foo'));
 		sleep(2);
 		Assert::same('Lorem', $service->get('foo'));
 		sleep(2);
 		Assert::null($service->get('foo'));
 
-		Assert::same('Lorem', $service->save('foo', 'Lorem', 1, new \DateTimeImmutable('+1 seconds')));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 1, new \DateTimeImmutable('+1 seconds')));
 		sleep(2);
 		Assert::null($service->get('foo'));
 	}

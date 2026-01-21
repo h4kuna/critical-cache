@@ -7,10 +7,11 @@ use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Clock\ClockInterface;
 
-
 final class Expire
 {
 	/**
+	 * count timestamp
+	 *
 	 * @return ($ttl is null ? null : int)
 	 */
 	public static function at(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
@@ -42,6 +43,8 @@ final class Expire
 	}
 
 	/**
+	 * count ttl
+	 *
 	 * @return ($ttl is null ? null : int)
 	 */
 	public static function after(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
@@ -60,9 +63,21 @@ final class Expire
 		return $timestamp - $now->getTimestamp();
 	}
 
-	public function midnight(?ClockInterface $clock = null): int
+	/**
+	 * next day 00:00:00
+	 */
+	public static function midnight(?ClockInterface $clock = null): int
 	{
-		return self::after(new DateTimeImmutable('tomorrow'), $clock);
+		$now = $clock?->now()->modify('tomorrow') ?? new DateTimeImmutable('tomorrow');
+		return self::after($now, $clock);
+	}
+
+	/**
+	 * this day 23:59:59
+	 */
+	public static function lasSecondOfDay(?ClockInterface $clock = null): int
+	{
+		return self::midnight($clock) - 1;
 	}
 
 }

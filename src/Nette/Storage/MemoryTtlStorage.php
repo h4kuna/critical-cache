@@ -4,6 +4,7 @@ namespace h4kuna\CriticalCache\Nette\Storage;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
+use Psr\Clock\ClockInterface;
 
 final class MemoryTtlStorage implements Storage
 {
@@ -14,12 +15,16 @@ final class MemoryTtlStorage implements Storage
 	/** @var array<string, array{data: mixed, dependencies: array{expire?: float}}> */
 	private array $data = [];
 
+	public function __construct(private readonly ClockInterface $clock)
+	{
+	}
+
 	/**
 	 * @return mixed|null
 	 */
 	public function read(string $key): mixed
 	{
-		if (isset($this->data[$key]) && self::verify($this->data[$key][self::KeyDependencies])) {
+		if (isset($this->data[$key]) && $this->verify($this->data[$key][self::KeyDependencies])) {
 			return $this->data[$key][self::KeyData];
 		}
 		unset($this->data[$key]);
@@ -30,14 +35,14 @@ final class MemoryTtlStorage implements Storage
 	/**
 	 * @param array<string, mixed> $meta
 	 */
-	private static function verify(array $meta): bool
+	private function verify(array $meta): bool
 	{
-		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= self::micro());
+		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= $this->micro());
 	}
 
-	private static function micro(): float
+	private function micro(): float
 	{
-		return microtime(true);
+		return (float) $this->clock->now()->format('U.u');
 	}
 
 	public function lock(string $key): void
@@ -55,11 +60,11 @@ final class MemoryTtlStorage implements Storage
 	/**
 	 * @return array{expire?: float}
 	 */
-	private static function validate(array $dependencies): array
+	private function validate(array $dependencies): array
 	{
 		$out = [];
 		if (isset($dependencies[Cache::Expire]) && is_numeric($dependencies[Cache::Expire])) {
-			$out[self::KeyTtl] = self::micro() + $dependencies[Cache::Expire];
+			$out[self::KeyTtl] = $this->micro() + $dependencies[Cache::Expire];
 			unset($dependencies[Cache::Expire]);
 		}
 
