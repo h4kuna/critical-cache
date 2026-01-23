@@ -77,20 +77,20 @@ $useOneTimeService->get('foo'); // token
 $useOneTimeService->get('foo'); // null
 ```
 
-## [ValidService](src/Services/ValidService.php)
+## [ValidityAwareCache](src/Caching/ValidityAwareCache.php)
 
 The service tell you if anything is valid, you can choose date range for valid window.
 
 ```php
-/** @var \h4kuna\CriticalCache\Caching\ValidityAwareCache $validToService */
-$validToService->set('foo', new DateTime('tomorrow midnight')); // from is null it is mean now
-$validToService->isValid('foo'); // true from 'now' to 'tomorrow midnight'
-$validToService->value('foo'); // return empty string if is valid and null if is invalid
-$validToService->from('foo'); // null mean unlimited or DateTimeImmutable
-$validToService->to('foo'); // null mean does not exist or DateTimeImmutable
-$validToService->isValid('foo'); // true the time is in range, false is out of range
+/** @var \h4kuna\CriticalCache\Caching\ValidityAwareCache $ValidityAwareCache */
+$ValidityAwareCache->set('foo', new DateTime('tomorrow midnight')); // from is null it is mean now
+$ValidityAwareCache->isValid('foo'); // true from 'now' to 'tomorrow midnight'
+$ValidityAwareCache->value('foo'); // return empty string if is valid and null if is invalid
+$ValidityAwareCache->from('foo'); // null mean unlimited or DateTimeImmutable
+$ValidityAwareCache->to('foo'); // null mean does not exist or DateTimeImmutable
+$ValidityAwareCache->isValid('foo'); // true the time is in range, false is out of range
 
-$validToService->set('bar', new DateTime('tomorrow midnight'), new DateTime('+5 minutes'), 'lorem'); // the string 'lorem' it will be a valid after 5 minutes
+$ValidityAwareCache->set('bar', new DateTime('tomorrow midnight'), new DateTime('+5 minutes'), 'lorem'); // the string 'lorem' it will be a valid after 5 minutes
 ```
 
 ## [TokenService](src/Services/TokenService.php)
