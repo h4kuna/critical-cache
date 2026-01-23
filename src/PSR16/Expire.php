@@ -64,7 +64,7 @@ final class Expire
 	}
 
 	/**
-	 * next day 00:00:00
+	 * ttl to next day 00:00:00
 	 */
 	public static function midnight(?ClockInterface $clock = null): int
 	{
@@ -73,9 +73,9 @@ final class Expire
 	}
 
 	/**
-	 * this day 23:59:59
+	 * ttl to 23:59:59
 	 */
-	public static function lasSecondOfDay(?ClockInterface $clock = null): int
+	public static function lastSecondOfDay(?ClockInterface $clock = null): int
 	{
 		return self::midnight($clock) - 1;
 	}
