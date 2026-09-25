@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Lock\Malkusch;
 
@@ -7,12 +7,16 @@ use h4kuna\CriticalCache\Lock\Lock;
 use h4kuna\CriticalCache\Lock\LockOriginalAbstract;
 use h4kuna\Dir\Dir;
 use Malkusch\Lock\Mutex\FlockMutex;
+use function fopen;
+use function md5;
+use function touch;
 
 /**
  * This implementation support FlockMutex from package malkusch/lock
  */
 final class CriticalSectionOriginal extends LockOriginalAbstract
 {
+
 	public function __construct(private Dir $tempDir)
 	{
 	}
@@ -20,10 +24,16 @@ final class CriticalSectionOriginal extends LockOriginalAbstract
 	protected function createLock(string $name): Lock
 	{
 		$filename = $this->tempDir->filename(md5($name), 'lock');
-		if (touch($filename) === false || ($resource = fopen($filename, 'r')) === false) {
+		if (touch($filename) === false) {
+			throw new LogicException("Could not create file '$filename'.");
+		}
+
+		$resource = fopen($filename, 'r');
+		if ($resource === false) {
 			throw new LogicException("Could not open file '$filename'.");
 		}
 
 		return new CriticalSection(new FlockMutex($resource));
 	}
+
 }

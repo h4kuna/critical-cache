@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Services;
 
@@ -8,15 +8,19 @@ use h4kuna\CriticalCache\Interfaces\PauseServiceInterface;
 use h4kuna\DataType\Date\Interval;
 use h4kuna\DataType\Date\Sleep;
 use Psr\Clock\ClockInterface;
+use function is_int;
+use function sprintf;
 
 /**
  * @implements PauseServiceInterface<DateTimeImmutable>
  */
 abstract class PauseService implements PauseServiceInterface
 {
+
 	public function __construct(
 		private readonly ClockInterface $clock,
-		private readonly DateInterval|int $pauseSeconds = 30)
+		private readonly DateInterval|int $pauseSeconds = 30,
+	)
 	{
 	}
 
@@ -26,7 +30,8 @@ abstract class PauseService implements PauseServiceInterface
 
 		return $this->clock
 			->now()
-			->modify(sprintf('+%d seconds',
+			->modify(sprintf(
+				'+%d seconds',
 				is_int($this->pauseSeconds) ? $this->pauseSeconds : Interval::toSeconds($this->pauseSeconds),
 			));
 	}
@@ -48,4 +53,5 @@ abstract class PauseService implements PauseServiceInterface
 	}
 
 	abstract protected function run(): void;
+
 }

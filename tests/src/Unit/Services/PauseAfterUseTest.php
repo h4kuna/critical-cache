@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
@@ -12,19 +12,23 @@ use h4kuna\DataType\Date\Time;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Tester\Assert;
 use Tester\TestCase;
+use function round;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 final class PauseAfterUseTest extends TestCase
 {
+
 	public function testExecute(): void
 	{
 		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
 		$service = new PauseAfterUse($cacheLock);
 		$pauseService = new class (SystemClock::create(), 3) extends PauseService {
+
 			protected function run(): void
 			{
 			}
+
 		};
 
 		$start = Time::micro();
@@ -32,6 +36,7 @@ final class PauseAfterUseTest extends TestCase
 		$service->execute($pauseService);
 		Assert::same(3.0, round(Time::micro() - $start));
 	}
+
 }
 
 (new PauseAfterUseTest())->run();

@@ -1,15 +1,17 @@
-<?php
-
-declare(strict_types = 1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Exceptions;
 
+use RuntimeException as PhpRuntimeException;
 use Throwable;
 
-abstract class RuntimeException extends \RuntimeException
+abstract class RuntimeException extends PhpRuntimeException
 {
 
-	public function __construct(string $message = '', ?Throwable $previous = null)
+	public function __construct(
+		string $message = '',
+		?Throwable $previous = null,
+	)
 	{
 		parent::__construct($message, $previous === null ? 0 : $previous->getCode(), $previous);
 	}

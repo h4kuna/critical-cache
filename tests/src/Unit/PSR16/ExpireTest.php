@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16;
 
@@ -15,6 +15,7 @@ require __DIR__ . '/../../bootstrap.php';
 
 final class ExpireTest extends TestCase
 {
+
 	/**
 	 * @return array<string|int, array{0: Closure(static):void}>
 	 */
@@ -22,38 +23,41 @@ final class ExpireTest extends TestCase
 	{
 		return [
 			[
-				static function (self $self) {
+				static function (self $self): void {
 					$self->assert(null, null);
 				},
 			],
 			[
-				static function (self $self) {
+				static function (self $self): void {
 					$self->assert(1, 1);
 				},
 			],
 			[
-				static function (self $self) {
-					$self->assert(86400, new DateInterval('P1D'));
+				static function (self $self): void {
+					$self->assert(86_400, new DateInterval('P1D'));
 				},
 			],
 			[
-				static function (self $self) {
-					$self->assert(94694400, new DateInterval('P3Y'));
+				static function (self $self): void {
+					$self->assert(94_694_400, new DateInterval('P3Y'));
 				},
 			],
 			[
-				static function (self $self) {
-					$self->assert(5, (new DateTimeImmutable())->setTimestamp(ClockFrozen::Time)->modify('+5 seconds'));
+				static function (self $self): void {
+					$self->assert(5, (new DateTimeImmutable())->setTimestamp(ClockFrozen::TIME)->modify('+5 seconds'));
 				},
 			],
 		];
 	}
 
-	public function assert(?int $expected, int|null|DateInterval|DateTimeImmutable $ttl): void
+	public function assert(
+		?int $expected,
+		int|DateInterval|DateTimeImmutable|null $ttl,
+	): void
 	{
 		$factory = new ClockFrozen();
 		Assert::same($expected, Expire::after($ttl, $factory));
-		$expectedAt = $expected === null ? null : $expected + ClockFrozen::Time;
+		$expectedAt = $expected === null ? null : $expected + ClockFrozen::TIME;
 		Assert::same($expectedAt, Expire::at($ttl, $factory));
 	}
 
@@ -70,14 +74,15 @@ final class ExpireTest extends TestCase
 	public function testMidnight(): void
 	{
 		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-11 10:09:08')));
-		Assert::same(49852, $ttl);
+		Assert::same(49_852, $ttl);
 
 		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-11 23:59:59')));
 		Assert::same(1, $ttl);
 
 		$ttl = Expire::midnight(FrozenClock::at(new DateTimeImmutable('2020-12-12 00:00:00')));
-		Assert::same(86400, $ttl);
+		Assert::same(86_400, $ttl);
 	}
+
 }
 
 (new ExpireTest())->run();

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\PSR16\Locking;
 
@@ -14,6 +14,7 @@ use h4kuna\Dir\TempDir;
 
 final class CacheLockingFactory implements CacheLockingFactoryInterface
 {
+
 	private PSR16CacheFactory $cacheFactory;
 
 	private LockOriginal $lockOriginal;
@@ -21,7 +22,8 @@ final class CacheLockingFactory implements CacheLockingFactoryInterface
 	public function __construct(
 		string|Dir|PSR16CacheFactory $cacheFactory,
 		?LockOriginal $lockOriginal = null,
-	) {
+	)
+	{
 		if ($cacheFactory instanceof PSR16CacheFactory) {
 			if ($lockOriginal === null) {
 				throw new MissingDependencyException('$lockOriginal must be filled');

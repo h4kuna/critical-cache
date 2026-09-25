@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\PSR16\Pool;
 
@@ -8,15 +8,18 @@ use h4kuna\CriticalCache\PSR16\PSR16CacheFactory;
 use h4kuna\Memoize\PSR16\MemoryCache;
 use Psr\Clock\ClockInterface;
 use Psr\SimpleCache\CacheInterface;
+use function is_array;
 
 final class CachePoolFactory implements CachePoolFactoryInterface
 {
+
 	private ClockInterface $clock;
 
 	public function __construct(
 		private PSR16CacheFactory $cacheFactory,
 		?ClockInterface $clock = null,
-	) {
+	)
+	{
 		$this->clock = $clock ?? self::createClock();
 	}
 
@@ -36,4 +39,5 @@ final class CachePoolFactory implements CachePoolFactoryInterface
 			$this->clock,
 		);
 	}
+
 }

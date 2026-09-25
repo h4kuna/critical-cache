@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Exceptions;
 
@@ -7,6 +7,8 @@ use h4kuna\Dir\Dir;
 use Malkusch\Lock\Mutex\Mutex;
 use Nette\Caching\Storages\FileStorage;
 use RuntimeException;
+use function class_exists;
+use function interface_exists;
 
 final class MissingDependencyException extends RuntimeException
 {
@@ -18,7 +20,10 @@ final class MissingDependencyException extends RuntimeException
 		}
 	}
 
-	private static function create(string $class, string $package): self
+	private static function create(
+		string $class,
+		string $package,
+	): self
 	{
 		return new self("Missing class \"$class\", you can install by: composer require $package");
 	}

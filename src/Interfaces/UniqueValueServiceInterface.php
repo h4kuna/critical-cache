@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Interfaces;
 
@@ -9,6 +9,7 @@ use h4kuna\CriticalCache\Contracts\UniqueHashQueueServiceContract;
  */
 interface UniqueValueServiceInterface
 {
+
 	/**
 	 * Intersect between generated list and stored list.
 	 *
@@ -18,10 +19,12 @@ interface UniqueValueServiceInterface
 	 *
 	 * @param non-empty-array<non-empty-string, non-empty-string> $data
 	 * @param TObject|null $dataSet
-	 *
 	 * @return iterable<int, string> return non duplicity
 	 */
-	public function check(array $data, ?object $dataSet = null): iterable;
+	public function check(
+		array $data,
+		?object $dataSet = null,
+	): iterable;
 
 	/**
 	 * for began choose between 10 and 100
@@ -51,4 +54,5 @@ interface UniqueValueServiceInterface
 	 * seconds
 	 */
 	public function ttl(): int;
+
 }

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\PSR16\Pool;
 
@@ -10,13 +10,17 @@ use Psr\SimpleCache\CacheInterface;
 
 final class CachePool implements CacheInterface
 {
-	private const KeyTtl = 'ttl';
-	private const KeyData = 'data';
+
+	private const KEY_TTL = 'ttl';
+	private const KEY_DATA = 'data';
 
 	/**
 	 * @param array<CacheInterface> $caches
 	 */
-	public function __construct(private array $caches, private ClockInterface $clock)
+	public function __construct(
+		private array $caches,
+		private ClockInterface $clock,
+	)
 	{
 	}
 
@@ -33,14 +37,20 @@ final class CachePool implements CacheInterface
 	/**
 	 * @return Generator<string, mixed>
 	 */
-	public function getMultiple(iterable $keys, mixed $default = null): iterable
+	public function getMultiple(
+		iterable $keys,
+		mixed $default = null,
+	): iterable
 	{
 		foreach ($keys as $key) {
 			yield $key => $this->get($key, $default);
 		}
 	}
 
-	public function get(string $key, mixed $default = null): mixed
+	public function get(
+		string $key,
+		mixed $default = null,
+	): mixed
 	{
 		$backup = [];
 		foreach ($this->caches as $cache) {
@@ -49,7 +59,7 @@ final class CachePool implements CacheInterface
 			if ($result !== null) {
 				$this->saveToParents($backup, $result, $key);
 
-				return $result[self::KeyData];
+				return $result[self::KEY_DATA];
 			}
 			$backup[] = $cache;
 		}
@@ -61,19 +71,27 @@ final class CachePool implements CacheInterface
 	 * @param array<CacheInterface> $backup
 	 * @param array{data: mixed, ttl: ?int} $result
 	 */
-	private function saveToParents(array $backup, array $result, string $key): void
+	private function saveToParents(
+		array $backup,
+		array $result,
+		string $key,
+	): void
 	{
 		if ($backup === []) {
 			return;
 		}
 
-		$ttl = $result[self::KeyTtl] === null ? null : $result[self::KeyTtl] - $this->clock->now()->getTimestamp();
+		$ttl = $result[self::KEY_TTL] === null ? null : $result[self::KEY_TTL] - $this->clock->now()->getTimestamp();
 		foreach ($backup as $cache) {
 			$cache->set($key, $result, $ttl);
 		}
 	}
 
-	public function set(string $key, mixed $value, DateInterval|int|null $ttl = null): bool
+	public function set(
+		string $key,
+		mixed $value,
+		DateInterval|int|null $ttl = null,
+	): bool
 	{
 		if ($value === null) {
 			$this->delete($key);
@@ -84,8 +102,8 @@ final class CachePool implements CacheInterface
 		$return = false;
 		foreach ($this->caches as $cache) {
 			$return = $cache->set($key, [
-					self::KeyData => $value,
-					self::KeyTtl => Expire::at($ttl, $this->clock),
+					self::KEY_DATA => $value,
+					self::KEY_TTL => Expire::at($ttl, $this->clock),
 				], Expire::after($ttl, $this->clock)) || $return;
 		}
 
@@ -102,7 +120,10 @@ final class CachePool implements CacheInterface
 		return $return;
 	}
 
-	public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
+	public function setMultiple(
+		iterable $values,
+		DateInterval|int|null $ttl = null,
+	): bool
 	{
 		$return = false;
 		foreach ($values as $key => $value) {
@@ -133,4 +154,5 @@ final class CachePool implements CacheInterface
 
 		return false;
 	}
+
 }

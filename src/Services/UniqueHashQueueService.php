@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Services;
 
@@ -7,16 +7,26 @@ use h4kuna\CriticalCache\Contracts\UniqueValuesGeneratorServiceContract;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use Psr\SimpleCache\CacheInterface;
+use function array_pop;
+use function count;
+use function get_object_vars;
+use function is_array;
+use function serialize;
 
 final readonly class UniqueHashQueueService implements UniqueHashQueueServiceContract
 {
+
 	public function __construct(
 		private CacheLocking $cache,
 		private UniqueValuesGeneratorServiceContract $uniqueValuesGeneratorService,
-	) {
+	)
+	{
 	}
 
-	public function execute(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): string
+	public function execute(
+		UniqueValueServiceInterface $checkUniqueValue,
+		?object $dataSet = null,
+	): string
 	{
 		$cacheKey = self::makeCacheKey($checkUniqueValue, $dataSet);
 		return $this->cache->synchronized($cacheKey, function (CacheInterface $cache) use (
@@ -37,7 +47,10 @@ final readonly class UniqueHashQueueService implements UniqueHashQueueServiceCon
 		});
 	}
 
-	public function count(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): int
+	public function count(
+		UniqueValueServiceInterface $checkUniqueValue,
+		?object $dataSet = null,
+	): int
 	{
 		$values = $this->cache->get(self::makeCacheKey($checkUniqueValue, $dataSet));
 		if (is_array($values) === false) {
@@ -47,7 +60,10 @@ final readonly class UniqueHashQueueService implements UniqueHashQueueServiceCon
 		return count($values);
 	}
 
-	public function saveNewBatch(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet = null): void
+	public function saveNewBatch(
+		UniqueValueServiceInterface $checkUniqueValue,
+		?object $dataSet = null,
+	): void
 	{
 		$this->cache->set(
 			self::makeCacheKey($checkUniqueValue, $dataSet),
@@ -55,7 +71,10 @@ final readonly class UniqueHashQueueService implements UniqueHashQueueServiceCon
 		);
 	}
 
-	private static function makeCacheKey(UniqueValueServiceInterface $checkUniqueValue, ?object $dataSet): string
+	private static function makeCacheKey(
+		UniqueValueServiceInterface $checkUniqueValue,
+		?object $dataSet,
+	): string
 	{
 		if ($dataSet === null) {
 			return $checkUniqueValue::class;
@@ -63,4 +82,5 @@ final readonly class UniqueHashQueueService implements UniqueHashQueueServiceCon
 
 		return $checkUniqueValue::class . serialize(get_object_vars($dataSet));
 	}
+
 }

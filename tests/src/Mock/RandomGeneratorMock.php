@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Mock;
 
@@ -7,9 +7,12 @@ use Tester\Assert;
 
 final class RandomGeneratorMock implements RandomGeneratorInterface
 {
+
 	private string $counter = 'A';
 
-	public function __construct(private ?DataSetEntity $dataSet = null) { }
+	public function __construct(private ?DataSetEntity $dataSet = null)
+	{
+	}
 
 	public function execute(?object $dataSet = null): string
 	{

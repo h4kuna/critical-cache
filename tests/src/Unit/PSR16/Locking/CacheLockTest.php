@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Locking;
 
-use h4kuna\CriticalCache;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use h4kuna\CriticalCache\PSR16\Locking\CacheLockingFactory;
+use h4kuna\CriticalCache\Utils\Dependency;
 use Tester\Assert;
 use Tester\TestCase;
+use function sleep;
+use function str_replace;
 
 require __DIR__ . '/../../../bootstrap.php';
 
@@ -15,6 +17,7 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class CacheLockTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$criticalSection = self::createCache(__FUNCTION__);
@@ -94,7 +97,7 @@ final class CacheLockTest extends TestCase
 	{
 		$criticalSection = self::createCache(__FUNCTION__);
 		$count = 0;
-		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+		$value = $criticalSection->load('testfoo', static function (Dependency $dependency) use (&$count) {
 			Assert::null($dependency->ttl);
 			++$count;
 
@@ -102,13 +105,14 @@ final class CacheLockTest extends TestCase
 		});
 		Assert::same(1, $count);
 		Assert::same('bar', $value);
-		$value = $criticalSection->load('testfoo', function (CriticalCache\Utils\Dependency $dependency) use (&$count) {
+		$value = $criticalSection->load('testfoo', static function (Dependency $dependency) use (&$count) {
 			Assert::null($dependency->ttl);
 			++$count;
 
 			return 'bar';
 		});
-		Assert::same(1, $count);;
+		Assert::same(1, $count);
+
 		Assert::same('bar', $value);
 	}
 
@@ -116,8 +120,8 @@ final class CacheLockTest extends TestCase
 	{
 		$criticalSection = self::createCache(__FUNCTION__);
 		$count = 0;
-		$value = $criticalSection->load('testfoo', function (
-			CriticalCache\Utils\Dependency $dependency,
+		$value = $criticalSection->load('testfoo', static function (
+			Dependency $dependency,
 			$cache,
 			$prefix,
 		) use (&$count) {

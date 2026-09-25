@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\PSR16\Locking;
 
@@ -11,10 +11,12 @@ use Psr\SimpleCache\CacheInterface;
 
 final class CacheLock implements CacheLocking
 {
+
 	public function __construct(
 		private CacheInterface $cache,
 		private LockOriginal $lockOriginal,
-	) {
+	)
+	{
 	}
 
 	public function clear(): bool
@@ -22,7 +24,16 @@ final class CacheLock implements CacheLocking
 		return $this->synchronized(__METHOD__, static fn (CacheInterface $cache): bool => $cache->clear());
 	}
 
-	public function synchronized(string $key, Closure $callback)
+	/**
+	 * @param Closure(CacheInterface): T $callback
+	 * @return T
+	 *
+	 * @template T
+	 */
+	public function synchronized(
+		string $key,
+		Closure $callback,
+	)
 	{
 		return $this->lockOriginal->get("_lock.$key")->synchronized(fn () => $callback($this->cache));
 	}
@@ -30,24 +41,32 @@ final class CacheLock implements CacheLocking
 	/**
 	 * Without locking
 	 */
-	public function get(string $key, mixed $default = null): mixed
+	public function get(
+		string $key,
+		mixed $default = null,
+	): mixed
 	{
 		return $this->cache->get($key, $default);
 	}
 
 	/**
 	 * @param iterable<string> $keys
-	 *
 	 * @return iterable<string, mixed>
 	 */
-	public function getMultiple(iterable $keys, mixed $default = null): iterable
+	public function getMultiple(
+		iterable $keys,
+		mixed $default = null,
+	): iterable
 	{
 		foreach ($keys as $key) {
 			yield $key => $this->get($key) ?? $default;
 		}
 	}
 
-	public function setMultiple(iterable $values, null|int|DateInterval $ttl = null): bool
+	public function setMultiple(
+		iterable $values,
+		int|DateInterval|null $ttl = null,
+	): bool
 	{
 		$return = false;
 		foreach ($values as $key => $value) {
@@ -58,7 +77,11 @@ final class CacheLock implements CacheLocking
 		return $return;
 	}
 
-	public function set(string $key, mixed $value, null|int|DateInterval $ttl = null): bool
+	public function set(
+		string $key,
+		mixed $value,
+		int|DateInterval|null $ttl = null,
+	): bool
 	{
 		return $this->synchronized($key, static fn (CacheInterface $cache): bool => $cache->set($key, $value, $ttl));
 	}
@@ -87,12 +110,15 @@ final class CacheLock implements CacheLocking
 	}
 
 	/**
-	 * @template T
 	 * @param Closure(Dependency, CacheInterface, string): T $callback
-	 *
 	 * @return T
+	 *
+	 * @template T
 	 */
-	public function load(string $key, Closure $callback)
+	public function load(
+		string $key,
+		Closure $callback,
+	)
 	{
 		$data = $this->cache->get($key);
 		if ($data === null) {

@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Interfaces;
 
@@ -9,6 +9,7 @@ use DateInterval;
  */
 interface PauseServiceInterface
 {
+
 	/**
 	 * @return T not null
 	 */
@@ -21,4 +22,5 @@ interface PauseServiceInterface
 	 * @return bool use default true
 	 */
 	public function wait(mixed $value): bool;
+
 }

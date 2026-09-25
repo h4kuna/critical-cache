@@ -1,7 +1,8 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Caching;
 
+use DateTime;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
@@ -12,14 +13,16 @@ use h4kuna\CriticalCache\Tests\Mock\ClockMutable;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Tester\Assert;
 use Tester\TestCase;
+use function is_string;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 final class ValidityAwareCacheTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
-		$nowMutable = new \DateTime('2020-12-30 13:14:15');
+		$nowMutable = new DateTime('2020-12-30 13:14:15');
 		$clock = new ClockMutable($nowMutable);
 		$service = new ValidityAwareCache(new PsrCacheAdapter(new MemoryTtlStorage($clock)), $clock, new TimeRangeEncoder($clock));
 
@@ -59,6 +62,7 @@ final class ValidityAwareCacheTest extends TestCase
 		$date->setTimezone(new DateTimeZone('UTC'));
 		return $date->format(DateTimeInterface::RFC3339);
 	}
+
 }
 
 (new ValidityAwareCacheTest())->run();

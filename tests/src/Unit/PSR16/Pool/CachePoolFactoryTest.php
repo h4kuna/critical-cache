@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Pool;
 
@@ -15,6 +15,7 @@ require __DIR__ . '/../../../bootstrap.php';
 
 final class CachePoolFactoryTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$cacheFactory = new NetteCacheFactory(new Dir(__DIR__ . '/../../../../temp'));
@@ -26,6 +27,7 @@ final class CachePoolFactoryTest extends TestCase
 		$pool = $poolFactory->create([new MemoryCache(), $cacheFactory->create()]);
 		Assert::type(CachePool::class, $pool);
 	}
+
 }
 
 (new CachePoolFactoryTest())->run();

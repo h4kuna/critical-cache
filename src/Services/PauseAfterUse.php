@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Services;
 
@@ -10,13 +10,16 @@ use Psr\SimpleCache\CacheInterface;
 
 final readonly class PauseAfterUse implements PauseAfterUseContract
 {
-	public function __construct(private CacheLocking $cacheLocking) { }
+
+	public function __construct(private CacheLocking $cacheLocking)
+	{
+	}
 
 	public function execute(PauseServiceInterface $pauseService): void
 	{
 		$key = $pauseService::class;
 		do {
-			$value = $this->cacheLocking->synchronized($key, function (CacheInterface $cache) use (
+			$value = $this->cacheLocking->synchronized($key, static function (CacheInterface $cache) use (
 				$key,
 				$pauseService,
 			) {
@@ -36,4 +39,5 @@ final readonly class PauseAfterUse implements PauseAfterUseContract
 			});
 		} while ($value !== null && $pauseService->wait($value));
 	}
+
 }

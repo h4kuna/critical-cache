@@ -1,14 +1,16 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Lock;
 
 interface Lock
 {
+
 	/**
-	 * @template T
 	 * @param callable(): T $callback
-	 *
 	 * @return T
+	 *
+	 * @template T
 	 */
-	function synchronized(callable $callback);
+	public function synchronized(callable $callback);
+
 }

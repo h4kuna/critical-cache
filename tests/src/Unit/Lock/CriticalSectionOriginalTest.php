@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Lock;
 
@@ -11,6 +11,7 @@ require __DIR__ . '/../../bootstrap.php';
 
 final class CriticalSectionOriginalTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$original = new CriticalSectionOriginal(new TempDir());
@@ -22,6 +23,7 @@ final class CriticalSectionOriginalTest extends TestCase
 		Assert::same($lock1, $lock2);
 		Assert::notSame($lock2, $lock3);
 	}
+
 }
 
-(new CriticalSectionOriginalTest)->run();
+(new CriticalSectionOriginalTest())->run();

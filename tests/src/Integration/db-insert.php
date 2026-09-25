@@ -1,14 +1,22 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Integration;
 
 require __DIR__ . '/../../../vendor/autoload.php';
 
-use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 use h4kuna\CriticalCache\Services\RandomGenerator;
+use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 use h4kuna\CriticalCache\Services\UniqueValuesGeneratorService;
 use PDO;
 use PDOException;
+use function array_values;
+use function count;
+use function floor;
+use function microtime;
+use function sprintf;
+use function str_repeat;
+use function substr;
+use function unlink;
 
 $database = __DIR__ . '/test.db';
 @unlink($database);
@@ -19,17 +27,17 @@ try {
 	$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 	// Vytvoření tabulky, pokud neexistuje
-	$sql = "CREATE TABLE IF NOT EXISTS test (
+	$sql = 'CREATE TABLE IF NOT EXISTS test (
                 unique_value TEXT NOT NULL
-            )";
+            )';
 	$pdo->exec($sql);
 
-	$indexSql = "CREATE INDEX IF NOT EXISTS idx_unique_value ON test (unique_value)";
+	$indexSql = 'CREATE INDEX IF NOT EXISTS idx_unique_value ON test (unique_value)';
 	$pdo->exec($indexSql);
 
-	echo "Tabulka a index byly vytvořeny nebo již existují.<br>";
+	echo 'Tabulka a index byly vytvořeny nebo již existují.<br>';
 } catch (PDOException $e) {
-	echo "Chyba připojení: " . $e->getMessage();
+	echo 'Chyba připojení: ' . $e->getMessage();
 }
 
 function placeholder(array $data, string $str): string
@@ -39,9 +47,10 @@ function placeholder(array $data, string $str): string
 
 
 $checker = new class($pdo) extends UniqueValueServiceAbstract {
+
 	public function __construct(private readonly PDO $pdo)
 	{
-		parent::__construct(new RandomGenerator(),200000);
+		parent::__construct(new RandomGenerator(), 200_000);
 	}
 
 	public function check(array $data): iterable
@@ -53,6 +62,7 @@ $checker = new class($pdo) extends UniqueValueServiceAbstract {
 			yield $row->unique_value;
 		}
 	}
+
 };
 
 $uniqueGenerator = new UniqueValuesGeneratorService();
@@ -62,7 +72,7 @@ $start = microtime(true);
 for ($i = 0; $i < $limit; ++$i) {
 	$values = $uniqueGenerator->execute($checker);
 
-	$sql = "INSERT INTO test (unique_value) VALUES " . placeholder($values, '(?), ');
+	$sql = 'INSERT INTO test (unique_value) VALUES ' . placeholder($values, '(?), ');
 
 	$stmt = $pdo->prepare($sql);
 	$stmt->execute($values);

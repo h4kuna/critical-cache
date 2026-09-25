@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
@@ -20,6 +20,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 final class UniqueHashQueueServiceTest extends TestCase
 {
+
 	/**
 	 * @return array<string|int, array{0: Closure(static):void}>
 	 */
@@ -27,14 +28,14 @@ final class UniqueHashQueueServiceTest extends TestCase
 	{
 		return [
 			[
-				static function (self $self) {
+				static function (self $self): void {
 					$self->assertExecute(
 						new DataSetEntity('lorem', 42),
 					);
 				},
 			],
 			[
-				static function (self $self) {
+				static function (self $self): void {
 					$self->assertExecute(
 						null,
 					);
@@ -45,6 +46,7 @@ final class UniqueHashQueueServiceTest extends TestCase
 
 	/**
 	 * @param Closure(static):void $assert
+	 *
 	 * @dataProvider dataExecute
 	 */
 	public function testExecute(Closure $assert): void
@@ -54,7 +56,8 @@ final class UniqueHashQueueServiceTest extends TestCase
 
 	public function assertExecute(
 		?DataSetEntity $dataSet,
-	): void {
+	): void
+	{
 		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
 		$service = new UniqueHashQueueService($cacheLock, new UniqueValuesGeneratorService());
 
@@ -79,6 +82,7 @@ final class UniqueHashQueueServiceTest extends TestCase
 		$value = $service->execute($uniqueGenerator, $dataSet);
 		Assert::same('H', $value);
 	}
+
 }
 
 (new UniqueHashQueueServiceTest())->run();

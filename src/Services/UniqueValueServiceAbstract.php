@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Services;
 
 use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
+use function array_values;
 
 abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 {
+
 	/**
 	 * @param positive-int $queueSize
 	 * @param int<1, 10> $tries
@@ -16,7 +18,8 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 		private readonly int $queueSize = 50,
 		private readonly int $tries = 3,
 		private readonly int $ttl = 2_592_000, // 60 * 60 * 24 * 30
-	) {
+	)
+	{
 	}
 
 	public function getQueueSize(): int
@@ -43,4 +46,5 @@ abstract class UniqueValueServiceAbstract implements UniqueValueServiceInterface
 	{
 		return $this->ttl;
 	}
+
 }

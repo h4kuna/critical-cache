@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
@@ -13,6 +13,7 @@ require_once __DIR__ . '/../../bootstrap.php';
 
 final class TokenServiceTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$tokenService = new TokenService(new UseOneTimeService(ValidServiceFactory::create()), new RandomGenerator());
@@ -20,6 +21,7 @@ final class TokenServiceTest extends TestCase
 		$token = $tokenService->make();
 		Assert::true($tokenService->isEqual($token));
 	}
+
 }
 
 (new TokenServiceTest())->run();

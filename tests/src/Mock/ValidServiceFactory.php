@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Mock;
 
@@ -11,9 +11,11 @@ use Nette\Bridges\Psr\PsrCacheAdapter;
 
 final class ValidServiceFactory
 {
+
 	public static function create(): ValidityAwareCacheContract
 	{
 		$clock = SystemClock::create();
 		return new ValidityAwareCache(new PsrCacheAdapter(new MemoryTtlStorage($clock)), $clock, new TimeRangeEncoder($clock));
 	}
+
 }

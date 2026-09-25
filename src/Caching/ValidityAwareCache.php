@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Caching;
 
@@ -17,11 +17,13 @@ use Psr\SimpleCache\CacheInterface;
  */
 final readonly class ValidityAwareCache implements ValidityAwareCacheContract
 {
+
 	public function __construct(
 		private CacheInterface $cache,
 		private ClockInterface $clock,
 		private TimeRangeEncoder $timeRangeEncoder,
-	) {
+	)
+	{
 	}
 
 	public function get(string $key): TimeRangeItem
@@ -42,8 +44,8 @@ final readonly class ValidityAwareCache implements ValidityAwareCacheContract
 		int|DateInterval|DateTimeInterface $validTo,
 		int|DateInterval|DateTimeInterface|null $validFrom = null,
 		string $value = '',
-	): void {
-
+	): void
+	{
 		$validFromDate = Expire::toDate($validFrom, $this->clock);
 		$validToDate = Expire::toDate($validTo, $this->clock);
 

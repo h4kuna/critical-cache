@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Caching\ValidityAware;
 
@@ -12,6 +12,7 @@ require_once __DIR__ . '/../../../bootstrap.php';
 
 final class TimeRangeItemTest extends TestCase
 {
+
 	/**
 	 * @dataProvider provideValidation
 	 */
@@ -19,7 +20,8 @@ final class TimeRangeItemTest extends TestCase
 		TimeRangeItem $timeRangeItem,
 		bool $isValid,
 		bool $isExpired,
-		?string $value): void
+		?string $value,
+	): void
 	{
 		Assert::same($isValid, $timeRangeItem->isValid());
 		Assert::same($isExpired, $timeRangeItem->isExpired());
@@ -48,9 +50,11 @@ final class TimeRangeItemTest extends TestCase
 		?DateTimeImmutable $from,
 		?DateTimeImmutable $to,
 		?string $value,
-	): TimeRangeItem {
+	): TimeRangeItem
+	{
 		return new TimeRangeItem($from, $to, $value, FrozenClock::at(new DateTimeImmutable('2020-12-30 10:13:15')));
 	}
+
 }
 
 (new TimeRangeItemTest())->run();

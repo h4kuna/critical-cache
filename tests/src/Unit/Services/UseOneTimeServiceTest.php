@@ -1,16 +1,19 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
+use DateTimeImmutable;
+use h4kuna\CriticalCache\Services\UseOneTimeService;
 use h4kuna\CriticalCache\Tests\Mock\ValidServiceFactory;
 use Tester\Assert;
 use Tester\TestCase;
-use h4kuna\CriticalCache\Services\UseOneTimeService;
+use function sleep;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 final class UseOneTimeServiceTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$service = new UseOneTimeService(ValidServiceFactory::create());
@@ -31,17 +34,18 @@ final class UseOneTimeServiceTest extends TestCase
 		$service = new UseOneTimeService(ValidServiceFactory::create());
 
 		Assert::null($service->get('foo'));
-		Assert::same('Lorem', $service->set('foo', 'Lorem', 4, new \DateTimeImmutable('+2 seconds')));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 4, new DateTimeImmutable('+2 seconds')));
 		Assert::null($service->get('foo'));
 		sleep(2);
 		Assert::same('Lorem', $service->get('foo'));
 		sleep(2);
 		Assert::null($service->get('foo'));
 
-		Assert::same('Lorem', $service->set('foo', 'Lorem', 1, new \DateTimeImmutable('+1 seconds')));
+		Assert::same('Lorem', $service->set('foo', 'Lorem', 1, new DateTimeImmutable('+1 seconds')));
 		sleep(2);
 		Assert::null($service->get('foo'));
 	}
+
 }
 
 (new UseOneTimeServiceTest())->run();

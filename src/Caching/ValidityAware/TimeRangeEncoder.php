@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Caching\ValidityAware;
 
@@ -16,9 +16,11 @@ use Psr\Clock\ClockInterface;
  */
 final readonly class TimeRangeEncoder
 {
+
 	public function __construct(
 		private ClockInterface $clock,
-	) {
+	)
+	{
 	}
 
 	/**
@@ -40,7 +42,8 @@ final readonly class TimeRangeEncoder
 		?DateTimeInterface $from,
 		DateTimeInterface $to,
 		string $value,
-	): array {
+	): array
+	{
 		return [
 			't' => self::toString($to),
 			'v' => $value,
@@ -66,4 +69,5 @@ final readonly class TimeRangeEncoder
 
 		return $date;
 	}
+
 }

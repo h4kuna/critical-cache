@@ -1,31 +1,32 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Nette\Storage;
 
 use Nette\Caching\Cache;
 use Nette\Caching\Storage;
 use Psr\Clock\ClockInterface;
+use function is_numeric;
 
 final class MemoryTtlStorage implements Storage
 {
-	private const KeyTtl = 'ttl';
-	private const KeyData = 'data';
-	private const KeyDependencies = 'dependencies';
 
-	/** @var array<string, array{data: mixed, dependencies: array{expire?: float}}> */
+	private const KEY_TTL = 'ttl';
+	private const KEY_DATA = 'data';
+	private const KEY_DEPENDENCIES = 'dependencies';
+
+	/**
+	 * @var array<string, array{data: mixed, dependencies: array{expire?: float}}>
+	 */
 	private array $data = [];
 
 	public function __construct(private readonly ClockInterface $clock)
 	{
 	}
 
-	/**
-	 * @return mixed|null
-	 */
 	public function read(string $key): mixed
 	{
-		if (isset($this->data[$key]) && $this->verify($this->data[$key][self::KeyDependencies])) {
-			return $this->data[$key][self::KeyData];
+		if (isset($this->data[$key]) && $this->verify($this->data[$key][self::KEY_DEPENDENCIES])) {
+			return $this->data[$key][self::KEY_DATA];
 		}
 		unset($this->data[$key]);
 
@@ -37,7 +38,7 @@ final class MemoryTtlStorage implements Storage
 	 */
 	private function verify(array $meta): bool
 	{
-		return isset($meta[self::KeyTtl]) === false || ($meta[self::KeyTtl] >= $this->micro());
+		return isset($meta[self::KEY_TTL]) === false || ($meta[self::KEY_TTL] >= $this->micro());
 	}
 
 	private function micro(): float
@@ -49,11 +50,18 @@ final class MemoryTtlStorage implements Storage
 	{
 	}
 
-	public function write(string $key, $data, array $dependencies): void
+	/**
+	 * @param mixed $data
+	 */
+	public function write(
+		string $key,
+		$data,
+		array $dependencies,
+	): void
 	{
 		$this->data[$key] = [
-			self::KeyDependencies => self::validate($dependencies),
-			self::KeyData => $data,
+			self::KEY_DEPENDENCIES => self::validate($dependencies),
+			self::KEY_DATA => $data,
 		];
 	}
 
@@ -64,7 +72,7 @@ final class MemoryTtlStorage implements Storage
 	{
 		$out = [];
 		if (isset($dependencies[Cache::Expire]) && is_numeric($dependencies[Cache::Expire])) {
-			$out[self::KeyTtl] = $this->micro() + $dependencies[Cache::Expire];
+			$out[self::KEY_TTL] = $this->micro() + $dependencies[Cache::Expire];
 			unset($dependencies[Cache::Expire]);
 		}
 

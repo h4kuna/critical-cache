@@ -1,9 +1,9 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\Services;
 
-use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
+use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
 use h4kuna\CriticalCache\Services\UniqueValueServiceAbstract;
 use h4kuna\CriticalCache\Services\UniqueValuesGeneratorService;
@@ -11,11 +11,13 @@ use h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock;
 use h4kuna\CriticalCache\Tests\Mock\UniqueValueServiceMock;
 use Tester\Assert;
 use Tester\TestCase;
+use function array_values;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
 final class UniqueValuesGeneratorServiceTest extends TestCase
 {
+
 	public function testSuccess(): void
 	{
 		$service = new UniqueValuesGeneratorService();
@@ -31,7 +33,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 	{
 		$service = new UniqueValuesGeneratorService();
 
-		Assert::exception(function () use ($service) {
+		Assert::exception(static function () use ($service): void {
 			$service->execute(self::createFullyChecked());
 		}, GenerateUniqueDataFailedException::class, 'Empty unique data, after "3" tries.');
 	}
@@ -40,7 +42,7 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 	{
 		$service = new UniqueValuesGeneratorService();
 
-		Assert::exception(function () use ($service) {
+		Assert::exception(static function () use ($service): void {
 			$service->execute(self::createBadGenerator());
 		}, GenerateUniqueDataFailedException::class, 'Really bad unique generator. It has 100000 same values.');
 	}
@@ -49,38 +51,51 @@ final class UniqueValuesGeneratorServiceTest extends TestCase
 	{
 		return new class extends UniqueValueServiceAbstract {
 
-			public function __construct() {
+			public function __construct()
+			{
 				parent::__construct(new RandomGeneratorMock(), 3);
 			}
 
-			public function check(array $data, ?object $dataSet = null): iterable
+			public function check(
+				array $data,
+				?object $dataSet = null,
+			): iterable
 			{
 				return array_values($data);
 			}
+
 		};
 	}
 
 	private static function createBadGenerator(): UniqueValueServiceInterface
 	{
 		return new class extends UniqueValueServiceAbstract {
+
 			public function __construct()
 			{
 				$randomGenerator = new class implements RandomGeneratorInterface {
+
 					public function execute(?object $dataSet = null): string
 					{
 						return 'A';
 					}
+
 				};
 
 				parent::__construct($randomGenerator, 3);
 			}
 
-			public function check(array $data, ?object $dataSet = null): iterable
+			public function check(
+				array $data,
+				?object $dataSet = null,
+			): iterable
 			{
 				return array_values($data);
 			}
+
 		};
 	}
+
 }
 
-(new UniqueValuesGeneratorServiceTest)->run();
+(new UniqueValuesGeneratorServiceTest())->run();

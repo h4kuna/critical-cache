@@ -1,25 +1,32 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Services;
 
 use h4kuna\CriticalCache\Contracts\UniqueValuesGeneratorServiceContract;
 use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
+use function assert;
+use function sprintf;
 
 final readonly class UniqueValuesGeneratorService implements UniqueValuesGeneratorServiceContract
 {
+
 	/**
 	 * @param positive-int $maxUniqueFailed
 	 */
 	public function __construct(
 		private int $maxUniqueFailed = 100_000,
-	) {
+	)
+	{
 	}
 
 	/**
 	 * @throws GenerateUniqueDataFailedException
 	 */
-	public function execute(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet = null): array
+	public function execute(
+		UniqueValueServiceInterface $checkUniqueColumnQuery,
+		?object $dataSet = null,
+	): array
 	{
 		$tries = $checkUniqueColumnQuery->getTries();
 		$values = [];
@@ -38,9 +45,13 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 
 	/**
 	 * @return list<non-empty-string>
+	 *
 	 * @throws GenerateUniqueDataFailedException
 	 */
-	private function newRandomBatch(UniqueValueServiceInterface $checkUniqueColumnQuery, ?object $dataSet): array
+	private function newRandomBatch(
+		UniqueValueServiceInterface $checkUniqueColumnQuery,
+		?object $dataSet,
+	): array
 	{
 		$size = $checkUniqueColumnQuery->getQueueSize();
 		$randomizer = $checkUniqueColumnQuery->getRandomGenerator();
@@ -68,4 +79,5 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 
 		return $checkUniqueColumnQuery->transform($new);
 	}
+
 }

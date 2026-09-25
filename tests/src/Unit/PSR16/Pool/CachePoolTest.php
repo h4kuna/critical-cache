@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Pool;
 
@@ -8,6 +8,7 @@ use Nette\Bridges\Psr\PsrCacheAdapter;
 use Nette\Caching\Storages\MemoryStorage;
 use Tester\Assert;
 use Tester\TestCase;
+use function iterator_to_array;
 
 require __DIR__ . '/../../../bootstrap.php';
 
@@ -16,6 +17,7 @@ require __DIR__ . '/../../../bootstrap.php';
  */
 final class CachePoolTest extends TestCase
 {
+
 	public function testBasic(): void
 	{
 		$cache1 = new PsrCacheAdapter(new MemoryStorage());

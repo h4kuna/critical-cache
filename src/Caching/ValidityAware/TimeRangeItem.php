@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\Caching\ValidityAware;
 
@@ -8,12 +8,14 @@ use Psr\Clock\ClockInterface;
 
 final readonly class TimeRangeItem
 {
+
 	public function __construct(
 		public ?DateTimeImmutable $from,
 		public ?DateTimeImmutable $to,
 		public ?string $value,
 		private ClockInterface $clock,
-	) {
+	)
+	{
 		if ($this->from !== null && $this->to !== null && $this->from > $this->to) {
 			throw new LogicException('From date must be less than to date.');
 		}
@@ -52,4 +54,5 @@ final readonly class TimeRangeItem
 
 		return $this->from <= $now;
 	}
+
 }

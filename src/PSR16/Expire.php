@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php declare(strict_types = 1);
 
 namespace h4kuna\CriticalCache\PSR16;
 
@@ -6,15 +6,20 @@ use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
 use Psr\Clock\ClockInterface;
+use function is_int;
 
 final class Expire
 {
+
 	/**
 	 * count timestamp
 	 *
 	 * @return ($ttl is null ? null : int)
 	 */
-	public static function at(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
+	public static function at(
+		int|DateInterval|DateTimeInterface|null $ttl,
+		?ClockInterface $clock = null,
+	): ?int
 	{
 		return self::toDate($ttl, $clock)?->getTimestamp();
 	}
@@ -23,9 +28,10 @@ final class Expire
 	 * @return ($ttl is null ? null : DateTimeInterface)
 	 */
 	public static function toDate(
-		int|null|DateInterval|DateTimeInterface $ttl,
+		int|DateInterval|DateTimeInterface|null $ttl,
 		?ClockInterface $clock = null,
-	): ?DateTimeInterface {
+	): ?DateTimeInterface
+	{
 		if ($ttl === null) {
 			return null;
 		} elseif (is_int($ttl)) {
@@ -47,7 +53,10 @@ final class Expire
 	 *
 	 * @return ($ttl is null ? null : int)
 	 */
-	public static function after(int|null|DateInterval|DateTimeInterface $ttl, ?ClockInterface $clock = null): ?int
+	public static function after(
+		int|DateInterval|DateTimeInterface|null $ttl,
+		?ClockInterface $clock = null,
+	): ?int
 	{
 		if ($ttl === null || is_int($ttl)) {
 			return $ttl;
