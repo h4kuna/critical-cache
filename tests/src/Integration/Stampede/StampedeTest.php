@@ -18,6 +18,7 @@ use function max;
 use function min;
 use function proc_close;
 use function proc_open;
+use function str_contains;
 use function stream_get_contents;
 use function uniqid;
 use const FILE_IGNORE_NEW_LINES;
@@ -67,7 +68,8 @@ final class StampedeTest extends TestCase
 
 		$processes = [];
 		for ($i = 0; $i < self::PROCESSES; ++$i) {
-			$command = PHP_BINARY . ' ' . escapeshellarg(__DIR__ . '/worker.php') . ' ' . escapeshellarg($mode) . ' ' . escapeshellarg($path) . ' ' . escapeshellarg($key);
+			// the code coverage runs by phpdbg, which is interactive without -qrr
+			$command = PHP_BINARY . (str_contains(PHP_BINARY, 'phpdbg') ? ' -qrr ' : ' ') . escapeshellarg(__DIR__ . '/worker.php') . ' ' . escapeshellarg($mode) . ' ' . escapeshellarg($path) . ' ' . escapeshellarg($key);
 			$process = proc_open($command, [1 => ['pipe', 'w']], $pipes);
 			if ($process === false) {
 				throw new RuntimeException("Could not run: $command");
