@@ -3,6 +3,8 @@
 [![Downloads this Month](https://img.shields.io/packagist/dm/h4kuna/critical-cache.svg)](https://packagist.org/packages/h4kuna/critical-cache)
 [![Latest stable](https://img.shields.io/packagist/v/h4kuna/critical-cache.svg)](https://packagist.org/packages/h4kuna/critical-cache)
 
+Part of the [h4kuna PHP libraries](https://github.com/h4kuna/library), see the overview of all packages.
+
 The library extends PSR-16 about locking when write or delete to cache.
 
 ### Installation to project
