@@ -3,11 +3,11 @@
 namespace h4kuna\CriticalCache\Tests\Unit\PSR16\Pool;
 
 use h4kuna\CriticalCache\Nette\NetteCacheFactory;
+use h4kuna\CriticalCache\PSR16\MemoryCache;
 use h4kuna\CriticalCache\PSR16\Pool\CachePool;
 use h4kuna\CriticalCache\PSR16\Pool\CachePoolFactory;
 use h4kuna\CriticalCache\Tests\Mock\ClockFrozen;
 use h4kuna\Dir\Dir;
-use h4kuna\Memoize\PSR16\MemoryCache;
 use Tester\Assert;
 use Tester\TestCase;
 

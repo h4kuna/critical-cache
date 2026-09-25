@@ -4,8 +4,8 @@ namespace h4kuna\CriticalCache\PSR16\Pool;
 
 use Beste\Clock\SystemClock;
 use h4kuna\CriticalCache\Exceptions\MissingDependencyException;
+use h4kuna\CriticalCache\PSR16\MemoryCache;
 use h4kuna\CriticalCache\PSR16\PSR16CacheFactory;
-use h4kuna\Memoize\PSR16\MemoryCache;
 use Psr\Clock\ClockInterface;
 use Psr\SimpleCache\CacheInterface;
 use function is_array;
@@ -35,7 +35,7 @@ final class CachePoolFactory implements CachePoolFactoryInterface
 		return new CachePool(
 			is_array($namespace)
 				? $namespace
-				: [new MemoryCache(), $this->cacheFactory->create($namespace)],
+				: [new MemoryCache($this->clock), $this->cacheFactory->create($namespace)],
 			$this->clock,
 		);
 	}

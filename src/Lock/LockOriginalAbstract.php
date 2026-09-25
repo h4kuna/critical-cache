@@ -2,18 +2,17 @@
 
 namespace h4kuna\CriticalCache\Lock;
 
-use h4kuna\Memoize\Memoize;
-
 abstract class LockOriginalAbstract implements LockOriginal
 {
 
-	use Memoize;
+	/**
+	 * @var array<string, Lock>
+	 */
+	private array $locks = [];
 
 	public function get(string $name): Lock
 	{
-		return $this->memoize([__METHOD__, $name], function () use ($name): Lock {
-			return $this->createLock($name);
-		});
+		return $this->locks[$name] ??= $this->createLock($name);
 	}
 
 	abstract protected function createLock(string $name): Lock;
