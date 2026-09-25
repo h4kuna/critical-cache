@@ -58,6 +58,7 @@
   },
   "suggest": {
     "symfony/lock": "As default implementation of the critical section.",
+    "ext-redis": "Wake up all waiting processes at once by RedisStreamNotifier.",
     "h4kuna/dir": "Default lock and cache need to create directories.",
     "nette/caching": "As default implementation for Cache for PSR-16."
   }
