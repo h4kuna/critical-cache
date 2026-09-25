@@ -3,37 +3,39 @@
 namespace h4kuna\CriticalCache\PSR16\Locking;
 
 use h4kuna\CriticalCache\Exceptions\MissingDependencyException;
-use h4kuna\CriticalCache\Lock\LockOriginal;
-use h4kuna\CriticalCache\Lock\Malkusch\CriticalSectionOriginal;
+use h4kuna\CriticalCache\Lock\CriticalSection;
+use h4kuna\CriticalCache\Lock\Symfony\SymfonyCriticalSection;
 use h4kuna\CriticalCache\Nette\NetteCacheFactory;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use h4kuna\CriticalCache\PSR16\CacheLockingFactoryInterface;
 use h4kuna\CriticalCache\PSR16\PSR16CacheFactory;
 use h4kuna\Dir\Dir;
 use h4kuna\Dir\TempDir;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\FlockStore;
 
 final class CacheLockingFactory implements CacheLockingFactoryInterface
 {
 
 	private PSR16CacheFactory $cacheFactory;
 
-	private LockOriginal $lockOriginal;
+	private CriticalSection $criticalSection;
 
 	public function __construct(
 		string|Dir|PSR16CacheFactory $cacheFactory,
-		?LockOriginal $lockOriginal = null,
+		?CriticalSection $criticalSection = null,
 	)
 	{
 		if ($cacheFactory instanceof PSR16CacheFactory) {
-			if ($lockOriginal === null) {
-				throw new MissingDependencyException('$lockOriginal must be filled');
+			if ($criticalSection === null) {
+				throw new MissingDependencyException('$criticalSection must be filled');
 			}
 			$this->cacheFactory = $cacheFactory;
-			$this->lockOriginal = $lockOriginal;
+			$this->criticalSection = $criticalSection;
 		} else {
 			$tempDir = self::createTempDir($cacheFactory);
 			$this->cacheFactory = self::createPSR16CacheFactory($tempDir);
-			$this->lockOriginal = self::createLockOriginal($tempDir);
+			$this->criticalSection = $criticalSection ?? self::createCriticalSection($tempDir);
 		}
 	}
 
@@ -51,16 +53,16 @@ final class CacheLockingFactory implements CacheLockingFactoryInterface
 		return new NetteCacheFactory($dir->dir('h4kuna/cache'));
 	}
 
-	private static function createLockOriginal(Dir $dir): LockOriginal
+	private static function createCriticalSection(Dir $dir): CriticalSection
 	{
-		MissingDependencyException::checkMalkuschLock();
+		MissingDependencyException::checkSymfonyLock();
 
-		return new CriticalSectionOriginal($dir->dir('h4kuna/locks'));
+		return new SymfonyCriticalSection(new LockFactory(new FlockStore($dir->dir('h4kuna/locks')->getDir())));
 	}
 
 	public function create(string $namespace = ''): CacheLocking
 	{
-		return new CacheLock($this->cacheFactory->create($namespace), $this->lockOriginal);
+		return new CacheLock($this->cacheFactory->create($namespace), $this->criticalSection);
 	}
 
 }

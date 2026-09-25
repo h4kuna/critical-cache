@@ -8,8 +8,8 @@ use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\PSR16\Locking\CacheLock;
 use h4kuna\CriticalCache\Services\UniqueHashQueueService;
 use h4kuna\CriticalCache\Services\UniqueValuesGeneratorService;
+use h4kuna\CriticalCache\Tests\Mock\CriticalSectionMock;
 use h4kuna\CriticalCache\Tests\Mock\DataSetEntity;
-use h4kuna\CriticalCache\Tests\Mock\LockOriginalMock;
 use h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock;
 use h4kuna\CriticalCache\Tests\Mock\UniqueValueServiceMock;
 use Nette\Bridges\Psr\PsrCacheAdapter;
@@ -58,7 +58,7 @@ final class UniqueHashQueueServiceTest extends TestCase
 		?DataSetEntity $dataSet,
 	): void
 	{
-		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
+		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new CriticalSectionMock());
 		$service = new UniqueHashQueueService($cacheLock, new UniqueValuesGeneratorService());
 
 		$uniqueGenerator = new UniqueValueServiceMock([

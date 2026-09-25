@@ -4,11 +4,10 @@ namespace h4kuna\CriticalCache\Exceptions;
 
 use Beste\Clock\SystemClock;
 use h4kuna\Dir\Dir;
-use Malkusch\Lock\Mutex\Mutex;
 use Nette\Caching\Storages\FileStorage;
 use RuntimeException;
+use Symfony\Component\Lock\LockFactory;
 use function class_exists;
-use function interface_exists;
 
 final class MissingDependencyException extends RuntimeException
 {
@@ -42,10 +41,10 @@ final class MissingDependencyException extends RuntimeException
 		}
 	}
 
-	public static function checkMalkuschLock(): void
+	public static function checkSymfonyLock(): void
 	{
-		if (interface_exists(Mutex::class) === false) {
-			throw self::create(Mutex::class, 'malkusch/lock');
+		if (class_exists(LockFactory::class) === false) {
+			throw self::create(LockFactory::class, 'symfony/lock');
 		}
 	}
 

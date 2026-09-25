@@ -7,7 +7,7 @@ use h4kuna\CriticalCache\Nette\Storage\MemoryTtlStorage;
 use h4kuna\CriticalCache\PSR16\Locking\CacheLock;
 use h4kuna\CriticalCache\Services\PauseAfterUse;
 use h4kuna\CriticalCache\Services\PauseService;
-use h4kuna\CriticalCache\Tests\Mock\LockOriginalMock;
+use h4kuna\CriticalCache\Tests\Mock\CriticalSectionMock;
 use h4kuna\DataType\Date\Time;
 use Nette\Bridges\Psr\PsrCacheAdapter;
 use Tester\Assert;
@@ -21,7 +21,7 @@ final class PauseAfterUseTest extends TestCase
 
 	public function testExecute(): void
 	{
-		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new LockOriginalMock());
+		$cacheLock = new CacheLock(new PsrCacheAdapter(new MemoryTtlStorage(SystemClock::create())), new CriticalSectionMock());
 		$service = new PauseAfterUse($cacheLock);
 		$pauseService = new class (SystemClock::create(), 3) extends PauseService {
 

@@ -4,7 +4,7 @@ namespace h4kuna\CriticalCache\PSR16\Locking;
 
 use Closure;
 use DateInterval;
-use h4kuna\CriticalCache\Lock\LockOriginal;
+use h4kuna\CriticalCache\Lock\CriticalSection;
 use h4kuna\CriticalCache\PSR16\CacheLocking;
 use h4kuna\CriticalCache\Utils\Dependency;
 use Psr\SimpleCache\CacheInterface;
@@ -14,7 +14,7 @@ final class CacheLock implements CacheLocking
 
 	public function __construct(
 		private CacheInterface $cache,
-		private LockOriginal $lockOriginal,
+		private CriticalSection $criticalSection,
 	)
 	{
 	}
@@ -35,7 +35,7 @@ final class CacheLock implements CacheLocking
 		Closure $callback,
 	)
 	{
-		return $this->lockOriginal->get("_lock.$key")->synchronized(fn () => $callback($this->cache));
+		return $this->criticalSection->synchronized(self::lockName($key), fn () => $callback($this->cache));
 	}
 
 	/**
@@ -124,20 +124,31 @@ final class CacheLock implements CacheLocking
 	)
 	{
 		$data = $this->cache->get($key);
-		if ($data === null) {
-			return $this->synchronized($key, static function (CacheInterface $cache) use ($key, $callback): mixed {
-				$data = $cache->get($key);
-				if ($data === null) {
-					$dependency = new Dependency();
-					$data = $callback($dependency, $cache, $key);
-					$cache->set($key, $data, $dependency->ttl);
-				}
-
-				return $data;
-			});
+		if ($data !== null) {
+			return $data;
 		}
 
-		return $data;
+		$build = function () use ($key, $callback): mixed {
+			$data = $this->cache->get($key);
+			if ($data === null) {
+				$dependency = new Dependency();
+				$data = $callback($dependency, $this->cache, $key);
+				$this->cache->set($key, $data, $dependency->ttl);
+			}
+
+			return $data;
+		};
+
+		return $this->criticalSection->singleFlight(
+			self::lockName($key),
+			$build,
+			fn (): mixed => $this->cache->get($key) ?? $this->criticalSection->synchronized(self::lockName($key), $build),
+		);
+	}
+
+	private static function lockName(string $key): string
+	{
+		return "_lock.$key";
 	}
 
 }

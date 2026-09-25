@@ -19,13 +19,13 @@
   "require-dev": {
     "beste/clock": "^3.0",
     "h4kuna/dir": "^0.1.7",
-    "malkusch/lock": "^3.0",
     "nette/caching": "^3.3.1",
     "nette/tester": "^2.4",
     "phpstan/phpstan": "^2.0",
     "phpstan/phpstan-deprecation-rules": "^2.0",
     "phpstan/phpstan-strict-rules": "^2.0",
     "shipmonk/coding-standard": "^0.2",
+    "symfony/lock": "^6.4 || ^7.0 || ^8.0",
     "tracy/tracy": "^2.9"
   },
   "autoload": {
@@ -57,8 +57,8 @@
     "tests": "vendor/bin/tester --colors 1 -s -C tests/src"
   },
   "suggest": {
-    "malkusch/lock": "As default implementation for Lock system.",
-    "h4kuna/dir": "malkusch/lock and nette/cache need to create directories.",
+    "symfony/lock": "As default implementation of the critical section.",
+    "h4kuna/dir": "Default lock and cache need to create directories.",
     "nette/caching": "As default implementation for Cache for PSR-16."
   }
 }
