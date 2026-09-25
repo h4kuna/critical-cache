@@ -63,6 +63,9 @@ final class CacheLock implements CacheLocking
 		}
 	}
 
+	/**
+	 * @param iterable<mixed, mixed> $values
+	 */
 	public function setMultiple(
 		iterable $values,
 		int|DateInterval|null $ttl = null,

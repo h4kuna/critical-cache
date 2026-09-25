@@ -59,7 +59,7 @@ final class ValidityAwareCacheTest extends TestCase
 		if (is_string($date)) {
 			$date = new DateTimeImmutable($date);
 		}
-		$date->setTimezone(new DateTimeZone('UTC'));
+		$date = $date->setTimezone(new DateTimeZone('UTC'));
 		return $date->format(DateTimeInterface::RFC3339);
 	}
 

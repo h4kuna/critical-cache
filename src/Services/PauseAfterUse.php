@@ -15,6 +15,11 @@ final readonly class PauseAfterUse implements PauseAfterUseContract
 	{
 	}
 
+	/**
+	 * @param PauseServiceInterface<T> $pauseService
+	 *
+	 * @template T
+	 */
 	public function execute(PauseServiceInterface $pauseService): void
 	{
 		$key = $pauseService::class;

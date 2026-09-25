@@ -5,7 +5,6 @@ namespace h4kuna\CriticalCache\Services;
 use h4kuna\CriticalCache\Contracts\UniqueValuesGeneratorServiceContract;
 use h4kuna\CriticalCache\Exceptions\GenerateUniqueDataFailedException;
 use h4kuna\CriticalCache\Interfaces\UniqueValueServiceInterface;
-use function assert;
 use function sprintf;
 
 final readonly class UniqueValuesGeneratorService implements UniqueValuesGeneratorServiceContract
@@ -70,8 +69,6 @@ final readonly class UniqueValuesGeneratorService implements UniqueValuesGenerat
 			++$i;
 			$new[$hash] = $hash;
 		} while ($i < $size);
-
-		assert($new !== []);
 
 		foreach ($checkUniqueColumnQuery->check($new, $dataSet) as $matchedHash) {
 			unset($new[$matchedHash]);

@@ -52,6 +52,7 @@ final class MemoryTtlStorage implements Storage
 
 	/**
 	 * @param mixed $data
+	 * @param array<string, mixed> $dependencies
 	 */
 	public function write(
 		string $key,
@@ -66,7 +67,8 @@ final class MemoryTtlStorage implements Storage
 	}
 
 	/**
-	 * @return array{expire?: float}
+	 * @param array<string, mixed> $dependencies
+	 * @return array{ttl?: float}
 	 */
 	private function validate(array $dependencies): array
 	{
@@ -84,6 +86,9 @@ final class MemoryTtlStorage implements Storage
 		unset($this->data[$key]);
 	}
 
+	/**
+	 * @param array<string, mixed> $conditions
+	 */
 	public function clean(array $conditions): void
 	{
 		if (isset($conditions[Cache::All])) {

@@ -44,7 +44,7 @@ final class MissingDependencyException extends RuntimeException
 
 	public static function checkMalkuschLock(): void
 	{
-		if (class_exists(Mutex::class) === false && interface_exists(Mutex::class) === false) {
+		if (interface_exists(Mutex::class) === false) {
 			throw self::create(Mutex::class, 'malkusch/lock');
 		}
 	}

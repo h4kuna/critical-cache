@@ -120,6 +120,9 @@ final class CachePool implements CacheInterface
 		return $return;
 	}
 
+	/**
+	 * @param iterable<mixed, mixed> $values
+	 */
 	public function setMultiple(
 		iterable $values,
 		DateInterval|int|null $ttl = null,
