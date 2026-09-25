@@ -5,75 +5,112 @@
 
 Part of the [h4kuna PHP libraries](https://github.com/h4kuna/library), see the overview of all packages.
 
-The library extends PSR-16 about locking when write or delete to cache.
+The library extends PSR-16 with locking, so only one process at a time can write to or delete from the cache.
 
 ### Installation to project
+
+Requires PHP 8.2 or newer.
+
 ```bash
 composer require h4kuna/critical-cache
 ```
-Optional
+
+Optional, needed by the default implementations:
+
 ```bash
 composer require h4kuna/dir malkusch/lock nette/caching beste/clock
 ```
 
 ### How to use
-First time you can use prepared factory [CacheFactory](./src/CacheFactory.php). The factory tell you what dependency missing. The dependency are not mandatory, because everything can be replaced by your implementation.
+
+The easiest way to start is the prepared factory [CacheLockingFactory](src/PSR16/Locking/CacheLockingFactory.php). If an optional dependency is missing, the factory throws an exception that tells you which package to install. The dependencies are not mandatory, because everything can be replaced by your own implementation.
 
 ```php
 use h4kuna\CriticalCache\PSR16\Locking\CacheLockingFactory;
+
 $cacheFactory = new CacheLockingFactory('/my/temp');
 $cache = $cacheFactory->create();
 assert($cache instanceof Psr\SimpleCache\CacheInterface);
 
-$data = $cache->load('foo', fn() => 'done');
+$data = $cache->load('foo', fn () => 'done');
 echo $data; // done
 ```
 
-Method `load` try read from cache, if data is not `null` that success else create critical section by lock system (Mutex), try read from cache, because any parallel process could be faster, if is success unlock critical section and return data, else call callback for create cache, save data to cache and unlock and return data.
+The method `load()` first tries to read from the cache. If the data is not `null`, it is returned. Otherwise, a critical section is created by the lock system (mutex) and the cache is read again, because a parallel process could have been faster. If the data is found now, the lock is released and the data is returned. If not, the callback is called, its result is saved to the cache, the lock is released and the data is returned.
 
-## Pool
-Support to use multi-level cache implements CacheInterface. By order Memory -> Filesystem.
-
+The callback receives `h4kuna\CriticalCache\Utils\Dependency`, the inner cache and the key. Set `$dependency->ttl` if the value should expire.
 
 ```php
-use h4kuna\CriticalCache\PSR16\Locking\CacheLockingFactory;
-use h4kuna\CriticalCache\PSR16\Pool\CachePoolFactory;
+use h4kuna\CriticalCache\Utils\Dependency;
 
-$cacheFactory = new CacheLockingFactory('/my/temp');
+$data = $cache->load('foo', function (Dependency $dependency): string {
+    $dependency->ttl = 3600; // seconds
+    return 'done';
+});
+```
+
+Methods `set()`, `delete()` and `clear()` are locked as well. Use `synchronized()` if you need your own critical section.
+
+## Pool
+
+Multi-level cache implementing `CacheInterface`. Caches are used in order Memory -> Filesystem.
+
+```php
+use h4kuna\CriticalCache\Nette\NetteCacheFactory;
+use h4kuna\CriticalCache\PSR16\Pool\CachePoolFactory;
+use h4kuna\Dir\TempDir;
+
+$cacheFactory = new NetteCacheFactory((new TempDir('/my/temp'))->dir('h4kuna/cache')); // dir() creates the directory, nette/caching needs an existing one
 $cachePoolFactory = new CachePoolFactory($cacheFactory);
 
-$cache = $cachePoolFactory->create(); // by default create MemoryCache and FileSystem. You can choose redis, memcache.
+$cache = $cachePoolFactory->create(); // by default MemoryCache and filesystem cache
 $cache->set('foo', 1); // write to memory and filesystem
 
 $cache1 = $cachePoolFactory->create();
 
-// try to load from Memory (not found), second is Filesystem (found), and save to Memory, return result. 
-echo $cache1->get('foo'); // 1 
+// try to load from memory (not found), then from filesystem (found), save it to memory and return the result
+echo $cache1->get('foo'); // 1
 ```
 
+You can pass your own list of caches (for example Redis or Memcached) to `create()`.
+
+```php
+use h4kuna\CriticalCache\PSR16\MemoryCache;
+
+$cache = $cachePoolFactory->create([new MemoryCache(), $redisCache]);
+```
 
 ## Lock
-By default, is used [malkusch/lock](//github.com/php-lock/lock), but if you implement [Lock](src/Lock/Lock.php) interface you can use different library.
 
-And by default is used [FlockMutex](//github.com/php-lock/lock/blob/master/classes/mutex/FlockMutex.php) this is reason why is need [h4kuna/dir](//github.com/h4kuna/dir). If you use different [Lock](//github.com/php-lock/lock/tree/master/classes/mutex) you don't need previous library.
+By default, [malkusch/lock](https://github.com/php-lock/lock) is used. If you implement the [LockOriginal](src/Lock/LockOriginal.php) and [Lock](src/Lock/Lock.php) interfaces, you can use a different library.
+
+```php
+use h4kuna\CriticalCache\PSR16\Locking\CacheLockingFactory;
+
+$cacheFactory = new CacheLockingFactory($myPSR16CacheFactory, $myLockOriginal);
+```
+
+The default mutex is [FlockMutex](https://github.com/php-lock/lock/blob/master/src/Mutex/FlockMutex.php), which is why [h4kuna/dir](https://github.com/h4kuna/dir) is needed. If you use a different [mutex](https://github.com/php-lock/lock/tree/master/src/Mutex), you don't need it.
 
 ## Cache
-By default, is used [nette/caching](//github.com/nette/caching) with PSR16 adapter.
+
+By default, [nette/caching](https://github.com/nette/caching) is used with its PSR-16 adapter.
 
 ## Clock PSR-20
-internal cache system beste/clock
+
+`CachePoolFactory` uses [beste/clock](https://github.com/beste/clock) if you don't pass your own `Psr\Clock\ClockInterface`.
 
 # Services
 
 ## [UseOneTimeService](src/Services/UseOneTimeService.php)
 
-The service is usable for token and use one time.
+The service stores a value, for example a token, which can be read only once.
 
 ```php
 /** @var \h4kuna\CriticalCache\Services\UseOneTimeService $useOneTimeService */
 $timeToLive = 900; // seconds
 $useOneTimeService->set('foo', 'token', $timeToLive);
-// after 900 seconds or one call $useOneTimeService::get() is removed from cache 
+// the value is removed from the cache after 900 seconds or after the first call of get()
 
 $useOneTimeService->get('foo'); // token
 $useOneTimeService->get('foo'); // null
@@ -81,75 +118,77 @@ $useOneTimeService->get('foo'); // null
 
 ## [ValidityAwareCache](src/Caching/ValidityAwareCache.php)
 
-The service tell you if anything is valid, you can choose date range for valid window.
+The service tells you whether something is valid. You can choose the time window in which it is valid.
 
 ```php
-/** @var \h4kuna\CriticalCache\Caching\ValidityAwareCache $ValidityAwareCache */
-$ValidityAwareCache->set('foo', new DateTime('tomorrow midnight')); // from is null it is mean now
-$ValidityAwareCache->isValid('foo'); // true from 'now' to 'tomorrow midnight'
-$ValidityAwareCache->value('foo'); // return empty string if is valid and null if is invalid
-$ValidityAwareCache->from('foo'); // null mean unlimited or DateTimeImmutable
-$ValidityAwareCache->to('foo'); // null mean does not exist or DateTimeImmutable
-$ValidityAwareCache->isValid('foo'); // true the time is in range, false is out of range
+/** @var \h4kuna\CriticalCache\Caching\ValidityAwareCache $validityAwareCache */
+$validityAwareCache->set('foo', new DateTime('tomorrow midnight')); // valid from now to tomorrow midnight
 
-$ValidityAwareCache->set('bar', new DateTime('tomorrow midnight'), new DateTime('+5 minutes'), 'lorem'); // the string 'lorem' it will be a valid after 5 minutes
+$item = $validityAwareCache->get('foo'); // TimeRangeItem
+$item->isValid(); // true if now is in the range, false if it is out of the range
+$item->value(); // stored value (empty string by default) if valid, null if invalid
+$item->from; // null means unlimited, otherwise DateTimeImmutable
+$item->to; // null means the key does not exist, otherwise DateTimeImmutable
+
+$validityAwareCache->set('bar', 3600, 300, 'lorem'); // 'lorem' is valid in 5 minutes, for one hour
+$validityAwareCache->delete('bar');
 ```
 
 ## [TokenService](src/Services/TokenService.php)
 
-The service generate token and keep it for defined time.
+The service generates a token and keeps it for a defined time. The token can be used only once.
 
 ```php
 /** @var \h4kuna\CriticalCache\Services\TokenService $tokenService */
-$token = $tokenService->make(); // return string token by default uuid v4
+$token = $tokenService->make(); // string token, uuid v4 by default
 
-dump($tokenService->isEqual($token)); // true / false
+$tokenService->isEqual($token); // true, then the token is removed
 
-// if you want compare your self let use get()
+// if you want to compare the value yourself, use get()
 $token = $tokenService->make(value: 'lorem');
 $value = $tokenService->get($token); // lorem
 
-$tokenService->isEqual(value: $value); // false because you use get()
+$tokenService->isEqual($token, $value); // false, because get() already removed the token
 ```
 
 ## [UniqueHashQueueService](src/Services/UniqueHashQueueService.php)
 
-The service generate unique values, witch check mechanism with source for example, with database. Create lock for critical section get one unique values from queue.
+The service generates unique values, which are checked against a source, for example a database. It creates a lock for the critical section and takes one unique value from the queue.
 
-For example, we use [RandomGeneratorMock](tests/src/Mock/RandomGeneratorMock.php), the class generate alphabet, A, B, C, D ... Z, AA...
+For the example, we use [RandomGeneratorMock](tests/src/Mock/RandomGeneratorMock.php) from the tests, which generates the alphabet: A, B, C, D ... Z, AA ... In production use [RandomGenerator](src/Services/RandomGenerator.php) (uuid v4) or your own implementation of [RandomGeneratorInterface](src/Interfaces/RandomGeneratorInterface.php).
 
 ```php
-// implement UniqueValueServiceInterface or extends UniqueValueServiceAbstract
+// implement UniqueValueServiceInterface or extend UniqueValueServiceAbstract
 $checkUniqueValue = new class extends \h4kuna\CriticalCache\Services\UniqueValueServiceAbstract {
-    
-    public function __construct() 
+
+    public function __construct()
     {
-        parent::__construct(new \h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock());
+        parent::__construct(new \h4kuna\CriticalCache\Tests\Mock\RandomGeneratorMock(), queueSize: 5);
     }
-    
-    public function check(array $data): iterable {
-        // example: $data = ['A', 'B', 'C', 'D', 'E'];
-        // SELECT unique_column FROM foo WHERE unique_column IN ('A', 'B', 'C');
-        // return matched values, for example B, C
-        
-        yield 'B';
-        yield 'C';
-        // or
+
+    public function check(array $data, ?object $dataSet = null): iterable
+    {
+        // example: $data = ['A' => 'A', 'B' => 'B', 'C' => 'C', 'D' => 'D', 'E' => 'E'];
+        // SELECT unique_column FROM foo WHERE unique_column IN ('A', 'B', 'C', 'D', 'E');
+        // return the values which already exist, for example B, C
         return ['B', 'C'];
     }
-   
+
 };
 
 /** @var \h4kuna\CriticalCache\Services\UniqueHashQueueService $uniqueHash */
-$value = $uniqueHash->execute($checkUniqueValue); // random unique value, A
-$value = $uniqueHash->execute($checkUniqueValue); // random unique value, D
-$value = $uniqueHash->execute($checkUniqueValue); // random unique value, E
+$value = $uniqueHash->execute($checkUniqueValue); // unique value, E
+$value = $uniqueHash->execute($checkUniqueValue); // unique value, D
+$value = $uniqueHash->execute($checkUniqueValue); // unique value, A
 ```
 
 ## [PauseAfterUse](src/Services/PauseAfterUse.php)
 
-The service generate value, and sleep few seconds before allow next to generate value.
+The service runs a task and then waits a few seconds before it allows the next run.
+
 ```php
+use h4kuna\CriticalCache\Services\PauseService;
+
 /** @var \h4kuna\CriticalCache\Services\PauseAfterUse $pauseAfterUse */
 /** @var \Psr\Clock\ClockInterface $clock */
 $pauseService = new class ($clock, 3) extends PauseService {
