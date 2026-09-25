@@ -4,11 +4,14 @@ namespace h4kuna\CriticalCache\Tests\Mock;
 
 use h4kuna\CriticalCache\Interfaces\RandomGeneratorInterface;
 use Tester\Assert;
+use function chr;
+use function intdiv;
+use function ord;
 
 final class RandomGeneratorMock implements RandomGeneratorInterface
 {
 
-	private string $counter = 'A';
+	private int $counter = 0;
 
 	public function __construct(private ?DataSetEntity $dataSet = null)
 	{
@@ -18,11 +21,23 @@ final class RandomGeneratorMock implements RandomGeneratorInterface
 	{
 		Assert::same($dataSet, $this->dataSet);
 
-		/** @var non-empty-string $char */
-		$char = $this->counter;
-		$this->counter++;
+		return self::toLetters($this->counter++);
+	}
 
-		return $char;
+	/**
+	 * 0 => A, 25 => Z, 26 => AA, 27 => AB, ... like string increment before PHP 8.5
+	 *
+	 * @return non-empty-string
+	 */
+	private static function toLetters(int $number): string
+	{
+		$letters = '';
+		do {
+			$letters = chr(ord('A') + $number % 26) . $letters;
+			$number = intdiv($number, 26) - 1;
+		} while ($number >= 0);
+
+		return $letters;
 	}
 
 }
