@@ -18,7 +18,7 @@ composer require h4kuna/critical-cache
 Optional, needed by the default implementations:
 
 ```bash
-composer require h4kuna/dir malkusch/lock nette/caching beste/clock
+composer require h4kuna/dir symfony/lock nette/caching beste/clock
 ```
 
 ### How to use
@@ -36,7 +36,11 @@ $data = $cache->load('foo', fn () => 'done');
 echo $data; // done
 ```
 
-The method `load()` first tries to read from the cache. If the data is not `null`, it is returned. Otherwise, a critical section is created by the lock system (mutex) and the cache is read again, because a parallel process could have been faster. If the data is found now, the lock is released and the data is returned. If not, the callback is called, its result is saved to the cache, the lock is released and the data is returned.
+The method `load()` protects against the cache stampede: when many processes miss the same key at once, only one of them builds the value, the others wait for it. It is double-checked locking:
+
+1. Read the cache, return the data if it is not `null`.
+2. Try to take the lock without waiting. The process which gets it reads the cache again (a parallel process could have been faster), calls the callback, saves the result, releases the lock and notifies the waiting processes.
+3. The other processes do not call the callback, they wait until the first one finishes and read the cache. If the value is still missing (the first process failed or the wait timed out), they build it one by one under the lock, still checking the cache first.
 
 The callback receives `h4kuna\CriticalCache\Utils\Dependency`, the inner cache and the key. Set `$dependency->ttl` if the value should expire.
 
@@ -82,15 +86,39 @@ $cache = $cachePoolFactory->create([new MemoryCache(), $redisCache]);
 
 ## Lock
 
-By default, [malkusch/lock](https://github.com/php-lock/lock) is used. If you implement the [LockOriginal](src/Lock/LockOriginal.php) and [Lock](src/Lock/Lock.php) interfaces, you can use a different library.
+The critical section is [CriticalSection](src/Lock/CriticalSection.php), the default implementation [SymfonyCriticalSection](src/Lock/Symfony/SymfonyCriticalSection.php) uses [symfony/lock](https://symfony.com/doc/current/components/lock.html). Without arguments the factory uses `FlockStore` in the temp directory, which is enough for one server.
+
+For more servers (pods), use a shared store, for example Redis, and pass your own critical section.
 
 ```php
+use h4kuna\CriticalCache\Lock\Notification\Redis\RedisStreamNotifier;
+use h4kuna\CriticalCache\Lock\Symfony\SymfonyCriticalSection;
 use h4kuna\CriticalCache\PSR16\Locking\CacheLockingFactory;
+use Symfony\Component\Cache\Adapter\RedisAdapter;
+use Symfony\Component\Lock\LockFactory;
+use Symfony\Component\Lock\Store\RedisStore;
 
-$cacheFactory = new CacheLockingFactory($myPSR16CacheFactory, $myLockOriginal);
+$redis = RedisAdapter::createConnection('redis://redis:6379'); // or new Redis()
+
+$criticalSection = new SymfonyCriticalSection(
+    new LockFactory(new RedisStore($redis)),
+    new RedisStreamNotifier($redis), // optional
+);
+
+$cacheFactory = new CacheLockingFactory('/my/temp', $criticalSection);
+// or with your own PSR-16 cache
+$cacheFactory = new CacheLockingFactory($myPSR16CacheFactory, $criticalSection);
 ```
 
-The default mutex is [FlockMutex](https://github.com/php-lock/lock/blob/master/src/Mutex/FlockMutex.php), which is why [h4kuna/dir](https://github.com/h4kuna/dir) is needed. If you use a different [mutex](https://github.com/php-lock/lock/tree/master/src/Mutex), you don't need it.
+### Waking up the waiting processes
+
+Without a notifier, the waiting processes wait for the lock and take it one by one after it is released, each of them only to find out that the value is ready. `FlockStore` wakes them up by the operating system, `RedisStore` polls about every 100 ms.
+
+[RedisStreamNotifier](src/Lock/Notification/Redis/RedisStreamNotifier.php) (needs `ext-redis`) wakes all of them up at once. The process which built the value adds an entry to a Redis stream, the waiting processes block on `XREAD`. Unlike Pub/Sub, the stream keeps the entry, so the notification cannot be lost between a failed lock attempt and the start of waiting. The notification is only a signal, the value is read from the cache. If it does not come in `$waitTimeout` (5 seconds by default), the process falls back to the lock.
+
+The lock has a TTL for expiring stores like Redis (`$ttl`, 300 seconds by default), so a crashed process does not block the others forever. Set it longer than your slowest callback.
+
+You can implement [Notifier](src/Lock/Notification/Notifier.php) for a different transport.
 
 ## Cache
 
